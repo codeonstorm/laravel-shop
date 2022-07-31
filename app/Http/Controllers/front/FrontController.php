@@ -15,30 +15,12 @@ class FrontController extends Controller
     public function index()
     {
 
-      // product according to categories
-      $result['home_categories']=DB::table('categories')
-        ->where(['status'=>1])
-        ->get();
-/*
-      foreach($result['home_categories'] as $list){
-          $result['home_categories_product'][$list->id]=
-              DB::table('products')
-              ->where(['status'=>1])
-              ->where(['cat_id'=>$list->id])
-              ->get();
 
-          foreach($result['home_categories_product'][$list->id] as $list1){
-              $result['home_product_attr'][$list1->id]=
-                  DB::table('product_attributes')
-                  ->leftJoin('sizes','sizes.id','=','product_attributes.size_id')
-                  ->leftJoin('colors','colors.id','=','product_attributes.color_id')
-                  ->where(['product_attributes.product_id'=>$list1->id])
-                  ->get();
-
-          }
-      }
+       //home banner
+  /*     $result['home_banner']=DB::table('home_banners')
+      ->where(['status'=>1])
+      ->get();
       */
-
       // featured products
       // trending products
       $result['home_featured_product']=
@@ -84,12 +66,7 @@ class FrontController extends Controller
                ->first(['attr.id as attr_id', 'attr.price', 'attr.mrp', 'product_images.img']);
        }
 
-       //home banner
-  /*     $result['home_banner']=DB::table('home_banners')
-      ->where(['status'=>1])
-      ->get();
-*/
-
+//prx($result);
         return view('front.index', $result);
     }
 
