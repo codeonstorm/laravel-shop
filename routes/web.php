@@ -31,7 +31,7 @@ Route::get('logout', function () {
     session()->forget('RANK');
     session()->forget('USER_NAME');
     return redirect('/');
-});
+})->name('logout');
 /*
 Route::get('/verification/{id}',[FrontController::class,'email_verification']);
 Route::post('forgot_password',[FrontController::class,'forgot_password']);
@@ -58,7 +58,7 @@ Route::post('/product_attr',[FrontController::class,'product_attr']);// to produ
 
 
 Route::group(['middleware'=>'user_auth'],function(){
-Route::get('/order',[FrontController::class,'order']);
+Route::get('/orders',[FrontController::class,'orders']);
 Route::get('/order_detail/{order_id}',[FrontController::class,'order_detail']);
 });
 

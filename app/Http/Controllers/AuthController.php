@@ -46,6 +46,7 @@ class AuthController extends Controller
                 $request->session()->put('RANK',$role->rank);
                 $request->session()->put('USER_ID',$user->id);
                 $request->session()->put('USER_NAME',$user->name);
+                $request->session()->put('USER_EMAIL',$user->email);
 
                 $status="success";
                 $msg="";

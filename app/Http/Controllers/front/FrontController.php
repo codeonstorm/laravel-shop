@@ -613,34 +613,50 @@ class FrontController extends Controller
           }
 
 
-public function order(Request $request)
+public function orders(Request $request)
 {
     $result['orders']=DB::table('orders')
     ->select('orders.*','order_status.status')
     ->leftJoin('order_status','order_status.id','=','orders.order_status')
     ->where(['orders.user_id'=>$request->session()->get('USER_ID')])
     ->get();
-   // prx($result);
+//chek and return cond..
     return view('front.orders',$result);
 }
 
 public function order_detail(Request $request,$id)
 {
-    $result['orders_details']=
-            DB::table('orders_details')
-            ->select('orders.*','orders_details.price','orders_details.qty','products.name as pname','products_attr.attr_image','sizes.size','colors.color','orders_status.orders_status')
-            ->leftJoin('orders','orders.id','=','orders_details.orders_id')
-            ->leftJoin('products_attr','products_attr.id','=','orders_details.products_attr_id')
-            ->leftJoin('products','products.id','=','products_attr.products_id')
-            ->leftJoin('sizes','sizes.id','=','products_attr.size_id')
-            ->leftJoin('orders_status','orders_status.id','=','orders.order_status')
-            ->leftJoin('colors','colors.id','=','products_attr.color_id')
-            ->where(['orders.id'=>$id])
-            ->where(['orders.customers_id'=>$request->session()->get('FRONT_USER_ID')])
-            ->get();
+    $result['order']=DB::table('orders')
+    ->select('orders.*','order_status.status as order_status')
+    ->leftJoin('order_status','order_status.id','=','orders.order_status')
+    ->where(['orders.id'=>$id])
+    ->where(['orders.user_id'=>$request->session()->get('USER_ID')])
+    ->first();
+//chek and return cond..
+//status column required to product status..
+
+        $result['orders_detail']=DB::table('order_details')
+        ->select('order_details.product_id','order_details.products_attr_id','order_details.price','order_details.qty',
+         'products.name as pname','products.slug','product_images.img','sizes.size','colors.name as color')
+        ->leftJoin('product_attributes','product_attributes.id','=','order_details.products_attr_id')
+        ->leftJoin('products','products.id','=','order_details.product_id')
+        ->leftJoin('product_images','product_images.product_attributes_id','=','product_attributes.id')
+        ->leftJoin('sizes','sizes.id','=','product_attributes.size_id')
+        ->leftJoin('colors','colors.id','=','product_attributes.color_id')
+        ->where(['order_details.order_id'=>$result['order']->id])
+        ->get();
+
+        $result['users']=DB::table('users')
+        ->select('users.name','users.email','users.mobile','user_details.*',)
+        ->leftJoin('user_details','user_details.user_id','=','users.id')
+        ->where(['users.id'=>$request->session()->get('USER_ID')])
+        ->first();
+  /*  
     if(!isset($result['orders_details'][0])){
         return redirect('/');
     }
+*/
+    //prx($result);
     return view('front.order_detail',$result);
 }
 

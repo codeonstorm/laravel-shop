@@ -8,11 +8,6 @@
 <!-- apply condition to check session to show  this page-->
 
 @section('container')
-@foreach($orders as $order)
-  @php 
-  prx($order);
-  @endphp
-@endforeach
 <div class="content">
   <div class="container">
   <div class="row">
@@ -28,46 +23,29 @@
                     <thead>
                     <tr>
                       <th>Order ID</th>
-                      <th>Item</th>
-                      <th>Status</th>
+                      <th>Payment Type</th>
+                      <th>Total Amount</th>
+                      <th>Payment Status</th>
+                      <th>Order Status</th>
                       <th>Order On</th>
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach($orders as $order)
+
                     <tr>
-                      <td><a href="pages/examples/invoice.html">#{{$order->id}}</a></td>
-                      <td>Call of Duty IV</td>
+                      <td><a href="{{url('order_detail/'.$order->id)}}">#{{$order->id}}</a></td>
+                      <td>{{$order->payment_type}}</td>
+                      <td>{{$order->total_amt}}</td>
+                      <td>{{$order->payment_status}}</td>
                       @if($order->status)
-                      <td><span class="badge badge-success">Shipped</span></td>
+                      <td><span class="badge badge-info">{{$order->status}}</span></td>
                       @endif
-                      <td>
+                      <td><!--badge-warning badge-danger badge-info-->
                         <div class="sparkbar" data-color="#00a65a" data-height="20">{{$order->created_at}}</div>
                       </td>
                     </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                      <td>Samsung Smart TV</td>
-                      <td><span class="badge badge-warning">Pending</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#f39c12" data-height="20">{{$order->created_at}}</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                      <td>iPhone 6 Plus</td>
-                      <td><span class="badge badge-danger">Delivered</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                      <td>Samsung Smart TV</td>
-                      <td><span class="badge badge-info">Processing</span></td>
-                      <td>
-                        <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                      </td>
-                    </tr>                   
+                    @endforeach              
                     </tbody>
                   </table>
                 </div>

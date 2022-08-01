@@ -6,16 +6,20 @@
             <img class="profile-user-img img-fluid img-circle" src="../../dist/img/user4-128x128.jpg" alt="User profile picture">
         </div>
 
-        <h3 class="profile-username text-center">Nina Mcintire</h3>
+        <h3 class="profile-username text-center">{{session()->get('USER_NAME')}}</h3>
 
-        <p class="text-muted text-center">Software Engineer</p>
+        <p class="text-muted text-center">{{session()->get('USER_EMAIL')}}</p>
 
         <ul class="list-group list-group-unbordered mb-3">
             <li class="list-group-item">
-            <b>Orders</b> <a class="float-right">1,322</a>
+            <a href="{{url('orders')}}">
+             <b>Orders</b> <a class="float-right">1,322</a>
+            </a>
             </li>
             <li class="list-group-item">
-            <b>Profile</b> <a class="float-right"></a>
+            <a href="{{route('logout')}}">
+            <b>Profile</b> 
+            </a>
             </li>
             <li class="list-group-item">
             <b>Address</b> <a class="float-right"></a>
@@ -24,7 +28,9 @@
             <b>Wishlist</b> <a class="float-right">13</a>
             </li>
             <li class="list-group-item">
-            <b>Logout</b> <a class="float-right"></a>
+            <a href="{{route('logout')}}">
+            <b>Logout</b> 
+            </a>
             </li>
         </ul>
 
