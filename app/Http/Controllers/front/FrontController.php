@@ -15,6 +15,11 @@ class FrontController extends Controller
     public function index()
     {
 
+        $result['home_categories']=
+        DB::table('categories')
+        ->where(['status'=>1])
+        ->where(['is_home'=>1])
+        ->get();
 
        //home banner
   /*     $result['home_banner']=DB::table('home_banners')
@@ -79,9 +84,12 @@ class FrontController extends Controller
       $filter_price_end="";
       $color_filter="";
       $colorFilterArr=[];
+      $size_filter="";
+      $sizeFilterArr=[];
       if($request->get('sort')!==null){
           $sort=$request->get('sort');
       }
+      
 
       $query=DB::table('products');
       $query=$query->leftJoin('categories','categories.id','=','products.cat_id');
@@ -116,15 +124,29 @@ class FrontController extends Controller
           $color_filter=$request->get('color_filter');
           $colorFilterArr=explode(":",$color_filter);
           $colorFilterArr=array_filter($colorFilterArr);
-
-          $query=$query->where(['product_attributes.color_id'=>$request->get('color_filter')]);
+          $query=$query->whereIn('product_attributes.color_id',$colorFilterArr);
 
       }
 
-      $query=$query->distinct()->select('products.*');
-      $query=$query->get();
+      if($request->get('size_filter')!==null){
+        $size_filter=$request->get('size_filter');
+        $sizeFilterArr=explode(":",$size_filter);
+        $sizeFilterArr=array_filter($sizeFilterArr);
+    
+        $query=$query->whereIn('product_attributes.size_id',$sizeFilterArr);
+    }
+ 
+      $query=$query->distinct()->select('products.*', 'categories.name as category', 'categories.slug as cat_slug');
+      $query=$query->get(); 
+      if($query->isEmpty()){
+        prx('data not found');
+      }
+
       $result['product']=$query;
 
+
+      $arrSize=[];
+      $arrColor=[];
       foreach($result['product'] as $list1){
 
           $query1=DB::table('product_attributes');
@@ -134,25 +156,39 @@ class FrontController extends Controller
           $query1=$query1->where(['product_attributes.product_id'=>$list1->id]);
           $query1=$query1->get();
           $result['product_attributes'][$list1->id]=$query1;
+
+          foreach($query1 as $attr){
+            $arrSize[]=$attr->size;
+            if(!empty($attr->name)){ //check latter      
+                $arrColor[$attr->name]['id']=$attr->color_id;
+                $arrColor[$attr->name]['code']=$attr->code;
+            }
+          }
+         
       }
+ 
+      $result['sizes']=array_filter(array_unique($arrSize));
+      $result['colors']=$arrColor;
 
-      $result['colors']=DB::table('colors')
-      ->where(['status'=>1])
-      ->get();
-
-
+      $result['sizes_left']=DB::table('sizes')
+      ->where(['status'=>1])->get();
+      
       $result['categories_left']=DB::table('categories')
+      ->where(['parent_id'=>$result['product'][0]->cat_id])
       ->where(['status'=>1])
       ->get();
-
+      //prx($result);
+/*
       $result['slug']=$slug;
       $result['sort']=$sort;
       $result['sort_txt']=$sort_txt;
       $result['filter_price_start']=$filter_price_start;
-      $result['filter_price_end']=$filter_price_end;
+      $result['filter_price_end']=$filter_price_end;*/
       $result['color_filter']=$color_filter;
-      $result['colorFilterArr']=$colorFilterArr;
-  // prx($result);
+      $result['colorFilterArr']=$colorFilterArr; 
+      $result['size_filter']=$size_filter;
+      $result['sizeFilterArr']=$sizeFilterArr; 
+       // prx($result);
       return view('front.category',$result);
   }
 
@@ -265,6 +301,37 @@ class FrontController extends Controller
        return view('front.product',$result);
   }
 
+
+  public function search(Request $request)
+  {
+          $str=$request->get('search');
+          $query=DB::table('products');
+          $query=$query->leftJoin('categories','categories.id','=','products.cat_id');
+          $query=$query->leftJoin('product_attributes','products.id','=','product_attributes.product_id');
+          $query=$query->where(['products.status'=>1]);
+          $query=$query->where('products.name','like',"%$str%");
+          $query=$query->orwhere('products.short_desc','like',"%$str%");
+          $query=$query->orwhere('products.desc','like',"%$str%");
+          $query=$query->orwhere('products.keywords','like',"%$str%");
+          $query=$query->orwhere('categories.name','like',"%$str%");
+          $query=$query->distinct()->select('products.*');
+          $query=$query->get();
+          $result['product']=$query;
+
+
+      foreach($result['product'] as $list1){
+
+          $query1=DB::table('product_attributes');
+          $query1=$query1->leftJoin('sizes','sizes.id','=','product_attributes.size_id');
+          $query1=$query1->leftJoin('colors','colors.id','=','product_attributes.color_id');
+          $query1=$query1->leftJoin('product_images','product_images.product_attributes_id','=','product_attributes.id');
+          $query1=$query1->where(['product_attributes.product_id'=>$list1->id]);
+          $query1=$query1->get();
+          $result['product_attributes'][$list1->id]=$query1;    
+      }
+     // prx($result);
+      return view('front.search',$result);
+  }
 
   public function add_to_cart(Request $request)
   {

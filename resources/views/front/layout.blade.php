@@ -60,5 +60,57 @@
 <script src="{{asset('dist/js/adminlte.min.js')}}"></script>
 <script src="{{asset('dist/js/front-custom.js')}}"></script>
 <script src="{{asset('dist/js/custom/carousel.js')}}"></script>
+<script>
+
+var i = document.querySelectorAll('input[type="checkbox"]');
+ 
+i.forEach((item) => {
+       
+  item.addEventListener("click", function(e) {
+         var name = e.target.name;
+         var value = e.target.value;
+         
+        if(name=="color"){
+          if(document.getElementById('color_'+e.target.id).classList.contains('color_active')){ 
+            document.getElementById('color_'+e.target.id).classList.remove("color_active");
+            var oldvalue=document.getElementById('color_filter').value;
+            var newVal = oldvalue.replace(value+":", '');
+            document.getElementById('color_filter').value=newVal;
+            document.getElementById('categoryFilter').submit();
+          }else{
+            document.getElementById('color_'+e.target.id).classList.add("color_active");
+            var oldvalue=document.getElementById('color_filter').value;
+             document.getElementById('color_filter').value= oldvalue+value+":";
+             document.getElementById('categoryFilter').submit();
+          }
+        }
+
+        if(name=='brand'){
+          if(e.target.checked){
+            var oldvalue=document.getElementById('brand_filter').value;
+             document.getElementById('brand_filter').value= oldvalue+value+":";
+             document.getElementById('categoryFilter').submit();
+          }else{
+            var oldvalue=document.getElementById('brand_filter').value;
+            var newVal = oldvalue.replace(value+":", '');
+            document.getElementById('brand_filter').value=newVal;
+            document.getElementById('brand_filter').submit();
+          }   
+        }
+
+        if(name=='size'){
+          if(e.target.checked){
+            var oldvalue=document.getElementById('size_filter').value;
+             document.getElementById('size_filter').value= oldvalue+value+":";
+             document.getElementById('categoryFilter').submit();
+          }else{
+            var oldvalue=document.getElementById('size_filter').value;
+            var newVal = oldvalue.replace(value+":", '');
+            document.getElementById('size_filter').value=newVal;
+            document.getElementById('categoryFilter').submit();
+          }
+        }
+       });  
+   })</script>
 </body>
 </html>

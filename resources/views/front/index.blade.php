@@ -3,6 +3,31 @@
 
 @section('stylesheet')
 <link rel="stylesheet" href="{{asset('dist/css/custom/carousel.css')}}">
+<style>
+.category-box{
+  overflow-x:scroll; 
+  overflow-y:hidden;    
+   margin-top: -61px;    
+   margin-bottom: 12px;
+}
+.box{
+  width:auto; 
+  white-space:nowrap;
+}
+.category-img{
+  display:inline-block; 
+  width:120px; 
+  padding:1%;
+}
+
+
+  @media screen and (min-width: 700px){
+  .category-box {
+      display: none;
+  }
+  }
+
+</style>
 @endsection
 
 @section('header')
@@ -16,6 +41,15 @@
 @section('container')
 <div class="content">
   <div class="container">
+    <div class="row category-box">
+    <div class="box">
+      @foreach($home_categories as $category)
+      <a href="{{url('category/'.$category->slug)}}">
+      <img class="category-img" src="{{asset('storage/media/category/'.$category->img)}}"   alt="">
+      </a>
+      @endforeach
+    </div>
+    </div>
     @include('front.partitions.craousel-banner')
     <div class="row mb-5">
       <div class="col-12">

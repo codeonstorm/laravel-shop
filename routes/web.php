@@ -46,6 +46,7 @@ Route::get('/',[FrontController::class,'index']);
 Route::get('category/{slug}',[FrontController::class,'category']);
 Route::get('product/{slug}/{color?}',[FrontController::class,'product']);
 Route::get('product/{slug}/patid/{attr_id}',[FrontController::class,'product']);
+Route::get('search',[FrontController::class,'search']);
 Route::post('add_to_cart',[FrontController::class,'add_to_cart']);
 Route::get('cart',[FrontController::class,'cart']);
 Route::get('/checkout',[FrontController::class,'checkout']);

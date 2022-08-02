@@ -3,7 +3,9 @@
   <!-- Control sidebar content goes here -->
   <div class="p-3">
     <h5>Title</h5>
-    <p>Sidebar content</p>
+    <a href="{{url('cart')}}">
+    <button class="btn btn-primary mt-5">Go to cart</button>
+    </a>
   </div>
 </aside>
 <!-- /.control-sidebar -->

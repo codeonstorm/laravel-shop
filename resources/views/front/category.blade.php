@@ -1,6 +1,10 @@
 @extends('front.layout')
 @section('page_title', 'Category')
-
+<style>
+.color_active{
+  border: 2px solid #bcac76!important;
+}
+</style>
 @section('header')
   @include('front.partitions.header')
 @endsection
@@ -16,100 +20,46 @@
 <div class="row">
 <div class="col-md-3 dex-filter">
   <nav class="mt-3">
+ 
     <h4>Categories</h4>
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-              <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-tachometer-alt"></i>
-                  <p>
-                    Trousers
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview" style="height: 89.5573px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px; display: none;">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <p class="item">Active Page</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <p class="item">Inactive Page</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
 
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column" ><!-- data-widget="treeview" role="menu" data-accordion="false" add this to toogle -->
               <li class="nav-item has-treeview menu-open">
-                <a href="#" class="nav-link">
+              <a href="{{url('category/'.$product[0]->cat_slug)}}" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
-                    Jackets
+                    {{$product[0]->category}}
                     <i class="right fas fa-angle-left"></i>
                   </p>
                 </a>
                 <ul class="nav nav-treeview" style="display: block; height: 89.5573px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                  @foreach($categories_left as $cat)
                   <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{url('category/'.$cat->slug)}}" class="nav-link">
 
-                      <p class="item">Active Page</p>
+                      <p class="item">{{$cat->name}}</p>
                     </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-
-                      <p class="item">Inactive Page</p>
-                    </a>
-                  </li>
+                  </li>             
+                  @endforeach
                 </ul>
               </li>
             </ul>
-
-            <div class="sidebar-block px-3 px-lg-0 mt-2">
+ 
+            <!--<div class="sidebar-block px-3 px-lg-0 mt-2">
               <div class="expand-lg"><h5 class="sidebar-heading d-none d-lg-block">Brand</h5>
                 <form class="mt-4 mt-lg-0"><div class="mb-1">
 
                   <div class="form-group">
                     <div class="custom-control custom-checkbox mb-1">
-                      <input class="custom-control-input" type="checkbox" id="clothes-brand" name="clothes-brand">
-                      <label for="clothes-brand" class="custom-control-label">Ceom Checkbox checked</label>
-                      <small>(<!-- -->18<!-- -->)</small></label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox mb-1">
-                      <input class="custom-control-input" type="checkbox" id="clothes-brand" name="clothes-brand">
-                      <label for="clothes-brand" class="custom-control-label">Custom Checkbox</label>
-                      <small>(<!-- -->18<!-- -->)</small></label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox mb-1">
-                      <input class="custom-control-input" type="checkbox" id="clothes-brand" name="clothes-brand">
-                      <label for="clothes-brand" class="custom-control-label">Checkbox checked</label>
-                      <small>(<!-- -->18<!-- -->)</small></label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox mb-1">
-                      <input class="custom-control-input" type="checkbox" id="clothes-brand" name="clothes-brand">
-                      <label for="clothes-brand" class="custom-control-label">Custom Checkbox</label>
-                      <small>(<!-- -->18<!-- -->)</small></label>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox mb-1">
-                      <input class="custom-control-input" type="checkbox" id="clothes-brand" name="clothes-brand">
-                      <label for="clothes-brand" class="custom-control-label">Custom checked</label>
-                      <small>(<!-- -->18<!-- -->)</small></label>
+                      <input class="custom-control-input" type="checkbox" id="brand" name="brand" value="google">
+                      <label for="brand" class="custom-control-label">Ceom Checkbox </label>
+                      <small>(  --><!--  )</small></label>
                     </div>
                   </div>
 
                    </form>
                  </div>
-               </div>
+               </div>-->
                                 <!-- brand//-->
 
               <!-- price filter-->
@@ -131,81 +81,54 @@
                 </div>
               <!--price-filter//-->
 
+              @if($sizes_left)
                <!-- size -->
                <div class="sidebar-block px-3 px-lg-0">
                  <div class="expand-lg">
                    <h5 class="sidebar-heading d-none d-lg-block">Size</h5>
                    <form class="mt-4 mt-lg-0">
-                     <div class="mb-1">
-                       <div class="custom-control custom-radio">
-                         <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
-                         <label for="customRadio1" class="custom-control-label">Custom Radio</label>
-                       </div>
-                     </div>
-                     <div class="mb-1">
-                       <div class="custom-control custom-radio">
-                         <input class="custom-control-input" type="radio" id="customRadio2" name="customRadio">
-                         <label for="customRadio2" class="custom-control-label">Custom Radio</label>
-                       </div>
-                     </div>
+                   @foreach($sizes_left as $size)
+                   <div class="form-group">
+                    <div class="custom-control custom-checkbox mb-1">
+                    @if(in_array($size->id,$sizeFilterArr))
+                      <input class="custom-control-input" type="checkbox" id="size_{{$size->size}}" name="size" value="{{$size->id}}" checked>
+                    @else
+                      <input class="custom-control-input" type="checkbox" id="size_{{$size->size}}" name="size" value="{{$size->id}}">
+                    @endif
+                      <label for="size_{{$size->size}}" class="custom-control-label">{{$size->size}} </label>
+                    </div>
+                  </div>
+                    @endforeach
+                    </form>
+                  </div>
+                </div>
+              <!--size//-->
+              @endif
 
-                     <div class="mb-1">
-                       <div class="custom-control custom-radio">
-                         <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
-                         <label for="customRadio1" class="custom-control-label">Custom Radio</label>
-                       </div>
-                     </div>
-
-                     <div class="mb-1">
-                       <div class="custom-control custom-radio">
-                         <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
-                         <label for="customRadio1" class="custom-control-label">Custom Radio</label>
-                       </div>
-                     </div>
-
-                     <div class="mb-1">
-                       <div class="custom-control custom-radio">
-                         <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
-                         <label for="customRadio1" class="custom-control-label">Custom Radio</label>
-                       </div>
-                     </div>
-
-                     </form>
-                   </div>
-                 </div>
-               <!--size//-->
-
-               <!--color-->
+               @if($colors)
+               <!--color-->             
                <div class="sidebar-block px-3 px-lg-0">
 
                  <div class="expand-lg">
                    <h5 class="sidebar-heading d-none d-lg-block">Colour</h5>
-                   <ul class="list-inline mb-0 colours-wrapper mt-4 mt-lg-0">
+                   <ul id="colors_box" class="list-inline mb-0 colours-wrapper mt-4 mt-lg-0">
+                    @foreach($colors as $key=>$color)                  
                      <li class="list-inline-item">
-                       <label class="btn-colour  form-label" for="value_sidebar_Blue" style="background-color:#668cb9">
+                     @if(in_array($color['id'],$colorFilterArr))
+                       <label class="btn-colour  form-label color_active" id="color_{{$key}}" for="{{$key}}" style="background-color:{{$color['code']}}">
+                      @else 
+                     <label class="btn-colour  form-label" id="color_{{$key}}" for="{{$key}}" style="background-color:{{$color['code']}}">
+                     @endif
                        </label><div class="input-invisible">
-                         <input type="checkbox" name="colour" id="value_sidebar_Blue" class="form-group-input">
+                         <input type="checkbox" name="color" id="{{$key}}" class="form-group-input" value="{{$color['id']}}">
                        </div>
                      </li>
-                       <li class="list-inline-item">
-                         <label class="btn-colour  form-label" for="value_sidebar_White" style="background-color:#fff">
-                         </label>
-                         <div class="input-invisible">
-                           <input type="checkbox" name="colour" id="value_sidebar_White" class="form-group-input">
-                         </div>
-                       </li>
-                       <li class="list-inline-item">
-                         <label class="btn-colour  form-label" for="value_sidebar_Violet" style="background-color:#8b6ea4">
-                         </label><div class="input-invisible">
-                           <input type="checkbox" name="colour" id="value_sidebar_Violet" class="form-group-input">
-                         </div></li><li class="list-inline-item">
-                           <label class="btn-colour  form-label" for="value_sidebar_Red" style="background-color:#dd6265">
-                           </label><div class="input-invisible">
-                             <input type="checkbox" name="colour" id="value_sidebar_Red" class="form-group-input">
-                           </div></li></ul></div>
-                        </div>
-
+                     @endforeach
+                   </ul>
+                   </div>
+                  </div>
                <!--color//-->
+               @endif
           </nav>
 
         <!-- /.card -->
@@ -284,8 +207,49 @@
 
 </div>
 </div>
+
+<form id="categoryFilter">
+  @if($colors)<input type="hidden" id="price_sort" name="price_sort" value="asc">@endif
+  @if($colors)<input type="hidden" id="color_filter" name="color_filter" value="{{$color_filter}}">@endif
+  @if($sizes_left)<input type="hidden" id="brand_filter" name="brand_filter" value="">@endif
+  @if($sizes_left)<input type="hidden" id="size_filter" name="size_filter" value="{{$size_filter}}">@endif
+</form>
 @endsection
+<script>
+
+</script>
 
 @section('footer')
   @include('front.partitions.footer')
 @endsection
+<script>
+ /*
+
+ alert(num);
+
+function setColfor(e){
+//console.log(e.type);
+  var color_str=jQuery('#color_filter').val();
+ /* if(type==1){
+    var new_color_str=color_str.replace(color+':','');
+    jQuery('#color_filter').val(new_color_str);
+  }else{
+    jQuery('#color_filter').val(color+':'+color_str);
+    jQuery('#categoryFilter').submit();
+  }
+ 
+  jQuery('#categoryFilter').submit();*//*
+}
+function sort_by(){
+  var sort_by_value=jQuery('#sort_by_value').val();
+  jQuery('#sort').val(sort_by_value);
+  jQuery('#categoryFilter').submit();
+}
+
+function sort_price_filter(){
+  jQuery('#filter_price_start').val(jQuery('#skip-value-lower').html());
+  jQuery('#filter_price_end').val(jQuery('#skip-value-upper').html());
+  jQuery('#categoryFilter').submit(); 
+}*/
+
+</script>
