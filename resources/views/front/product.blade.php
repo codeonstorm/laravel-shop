@@ -11,19 +11,11 @@
 
 @section('container')
 @php 
- 
- if(!empty($attr__id)){
- 
-  foreach($product_attr as $key=>$value){
-   if($attr__id==$value->id){
-    $id=$key;
-   }
-
+ echo $errors->status;
+  //check rating validation
+  if($errors->status ){
+   // echo "<sript>alert('please fill correct!')</script>";
   }
- }else{
-  $id=0;
- }
-  
 @endphp
 <div class="content">
       <div class="container">
@@ -266,38 +258,39 @@
                           </div>
                           <!-- /.card-header -->
                           <!-- form start -->
-                          <form role="form">
+                          <form method="get">
                             <div class="card-body">
                               <div class="row">
                                 <div class="form-group col-md-6">
-                                  <label for="exampleInputPassword1">Name *</label>
-                                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Enter Name">
+                                  <label for="name">Name *</label>
+                                  <input type="text" class="form-control" id="name" name="name" value="{{session()->get('USER_NAME')}}" placeholder="Enter Name">
                                 </div>
                                 <div class="form-group col-md-6">
-                                  <label for="exampleInputPassword1">Rate product & service *</label>
-                                  <select class="form-control" id="exampleInputPassword1">
-                                      <option>
+                                  <label for="rating">Rate product & service *</label>
+                                  <select class="form-control" id="rating" name="rating">
+                                      <option value="5">
                                         &#9733;&#9733;&#9733;&#9733;&#9733; (5/5)
                                       </option>
-                                      <option>
+                                      <option value="4">
                                         &#9733;&#9733;&#9733;&#9733;&#9734; (4/5)
                                       </option>
-                                      <option>
+                                      <option value="3">
                                         &#9733;&#9733;&#9733;&#9734;&#9734; (3/5)
                                       </option>
-                                      <option>
+                                      <option value="2">
                                         &#9733;&#9733;&#9734;&#9734;&#9734; (2/5)
                                       </option>
-                                      <option>
+                                      <option value="1">
                                         &#9733;&#9734;&#9734;&#9734;&#9734; (1/5)
                                       </option>
                                     </select>
                                 </div>
                               </div>
                               <div class="form-group">
-                                <label for="exampleInputEmail1">Review text *</label>
-                                <textarea type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter your review"></textarea>
+                                <label for="review">Review text *</label>
+                                <textarea class="form-control" id="review" name="review" placeholder="Enter your review"></textarea>
                               </div>
+                              <input type="hidden" name="id" value="{{$product_attr[$id]->id}}">
                                 <button type="submit" class="btn btn-primary">Post Review</button>
                             </div>
                             <!-- /.card-body -->

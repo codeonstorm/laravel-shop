@@ -115,8 +115,8 @@ class FrontController extends Controller
           $filter_price_start=$request->get('filter_price_start');
           $filter_price_end=$request->get('filter_price_end');
 
-          if($filter_price_start>0 && $filter_price_end>0){
-              $query=$query->whereBetween('products_attr.price',[$filter_price_start,$filter_price_end]);
+          if($filter_price_end>0){            
+              $query=$query->whereBetween('product_attributes.price',[$filter_price_start,$filter_price_end]);
           }
       }
 
@@ -181,9 +181,9 @@ class FrontController extends Controller
 /*
       $result['slug']=$slug;
       $result['sort']=$sort;
-      $result['sort_txt']=$sort_txt;
+      $result['sort_txt']=$sort_txt;*/
       $result['filter_price_start']=$filter_price_start;
-      $result['filter_price_end']=$filter_price_end;*/
+      $result['filter_price_end']=$filter_price_end;
       $result['color_filter']=$color_filter;
       $result['colorFilterArr']=$colorFilterArr; 
       $result['size_filter']=$size_filter;
@@ -285,18 +285,60 @@ class FrontController extends Controller
 
 
 
+ /***rating session */
+ if($request->get('rating')>0 && !empty($request->get('review'))){
+   $valid=Validator::make($request->all(),[
+       "rating"=>'required|integer',
+       "review"=>'required|string',
+  ]);
+   if(!$valid->passes()){
+       return response()->json(['status'=>'review_error','msg'=>"please fill correct!"]);
+   }
+   $check=DB::table('product_reviews')
+   ->where('user_id',session()->get("USER_ID"))
+   ->where('product_attributes_id',$request->get('id'))
+   ->exists();
+  
+  if(!$check){
+      DB::table('product_reviews')
+      ->insert([
+          'user_id'=>session()->get('USER_ID'),
+          'product_attributes_id'=>$request->get('id'),
+          'rating'=>$request->get('rating'),
+          'review'=>$request->get('review'),
+          'status'=>1,
+          'created_at'=>date('Y-m-d h:m:s'),
+          'updated_at'=>date('Y-m-d h:m:s'),
+      ]);
+  }
+ }
 
 
-  /*     $result['product_review']=
-               DB::table('product_review')
-               ->leftJoin('customers','customers.id','=','product_review.customer_id')
-               ->where(['product_review.products_id'=>$result['product']->id])
-               ->where(['product_review.status'=>1])
-               ->orderBy('product_review.added_on','desc')
-               ->select('product_review.rating','product_review.review','product_review.added_on','customers.name')
-               ->get();*/
-       //
-     }
+
+/*
+    $result['product_review']=
+            DB::table('product_review')
+            ->where(['product_review.product_attributes_id'=>$result['product']->id])
+            ->where(['product_review.status'=>1])
+            ->orderBy('product_review.added_on','desc')
+            ->select('product_review.rating','product_review.review','product_review.added_on','customers.name')
+            ->get(); */
+    }
+   
+
+    //imp
+    if(!empty($result['attr__id'])){
+        foreach($result['product_attr'] as $key=>$value){
+         if($result['attr__id']==$value->id){
+          $result['id']=$key;
+         }
+        
+        }
+       }else{
+        $result['id']=0;
+       }
+      
+//prx($result['id']);
 //prx($result);
        return view('front.product',$result);
   }

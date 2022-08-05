@@ -41,9 +41,9 @@ function buildTreeView($arr,$parent,$level=0,$prelevel= -1){
 			if($level==$prelevel){
 				$html.='</li>';
 			}
-			$url=url("/category/".$data['slug']);
+			$url=url("category/".$data['slug']);
 
-          $html.='<li class="nav-item dropdown dropdown-hover"><a  href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link ">'.$data['name'].'</a>';
+          $html.='<li class="nav-item dropdown dropdown-hover text-dark letter-spacing"><a style="white-space: nowrap;" href='.$url.'   aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">'.$data['name'].'</a>';
 
 
       if($level>$prelevel){
