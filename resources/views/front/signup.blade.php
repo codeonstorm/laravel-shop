@@ -1,8 +1,15 @@
 @extends('front.layout')
 @section('page_title', 'Signup')
-
+<style media="screen">
+.register-page{
+  background: #fff;
+}
+.content-wrappers{
+  padding-top: 0!important;
+}
+</style>
 @section('container')
-<div class="register-box">
+<div class="register-page">
   <div class="register-logo">
     <a href="../../index2.html"><b>Admin</b>LTE</a>
   </div>

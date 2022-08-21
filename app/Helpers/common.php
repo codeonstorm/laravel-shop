@@ -24,7 +24,7 @@ function getTopNavCat(){
     return $str;
 }
 
-$html='';
+$html='';/*
 function buildTreeView($arr,$parent,$level=0,$prelevel= -1){
 	global $html;
 	foreach($arr as $id=>$data){
@@ -43,7 +43,50 @@ function buildTreeView($arr,$parent,$level=0,$prelevel= -1){
 			}
 			$url=url("category/".$data['slug']);
 
-          $html.='<li class="nav-item dropdown dropdown-hover text-dark letter-spacing"><a style="white-space: nowrap;" href='.$url.'   aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">'.$data['name'].'</a>';
+          $html.='<li class="nav-item dropdown dropdown-hover text-dark letter-spacing"    ><a style="white-space: nowrap;"   class="" href='.$url.'">'.$data['name'].'</a><span class="dropdown-toggle pl-2 pr-2" style="float:right"></span>';
+
+
+      if($level>$prelevel){
+				$prelevel=$level;
+			}
+			$level++;
+			buildTreeView($arr,$id,$level,$prelevel);
+			$level--;
+		}
+	}
+	if($level==$prelevel){
+		$html.='</li></ul>';
+	}
+	return $html;
+}
+*/
+
+function buildTreeView($arr,$parent,$level=0,$prelevel= -1){
+	global $html;
+	foreach($arr as $id=>$data){
+		if($parent==$data['parent_id']){
+
+			if($level>$prelevel){
+        if($level>0){
+					$html.='<ul class="nav nav-treeview" '.$level.' style="display: none;" '.$prelevel.'>';
+        }
+			}
+
+			if($level==$prelevel){
+				$html.='</li>';
+			}
+			$url=url("category/".$data['slug']);
+
+
+           $html.='<li class="nav-item has-treeview">
+                     <a href="'.$url.'" class="nav-link">
+                       <p>'.$data['name'].'
+                        <i class="right fas fa-angle-left"></i>
+                       </p>
+                     </a>';
+
+
+
 
 
       if($level>$prelevel){
@@ -61,6 +104,8 @@ function buildTreeView($arr,$parent,$level=0,$prelevel= -1){
 }
 
 
+
+
 function getUserTempId(){
 	if(!session()->has('USER_ID')){
   	if(!session()->has('USER_TEMP_ID')){
@@ -72,7 +117,6 @@ function getUserTempId(){
   	}
 	}
 }
-
 
 
 function getAddToCartTotalItem(){
@@ -90,9 +134,17 @@ function getAddToCartTotalItem(){
         ->leftJoin('colors','colors.id','=','product_attributes.color_id')
         ->where(['user_id'=>$uid])
         ->where(['user_type'=>$user_type])
-        ->select('carts.qty','products.name', 'products.short_desc','sizes.size','colors.name as color','product_attributes.price','products.slug','products.id as pid','product_attributes.id as attr_id')
+        ->select('carts.id as cart_id','carts.qty','products.name', 'products.short_desc','sizes.size','colors.name as color','product_attributes.price','products.slug','products.id as pid','product_attributes.id as attr_id')
         ->get();
 
+        foreach ($result as $value) {
+          //if price is 0 or product is deleted
+          if(!$value->price){
+            echo "<div style='color:red;'>".$value->name." has been removed from your cart because it can no longer be purchased. Please contact us if you need assistance.</div>";
+            DB::table('carts')->where(['id'=>$value->cart_id])->delete();
+
+          }
+        }
 	return $result;
 
 }
@@ -113,7 +165,7 @@ function getAvaliableQty($attr_id){
             ->select('order_details.qty as qty')
             ->get();
   	$result=DB::table('product_attributes')->where(['id'=>$attr_id])->find();
-            prx($result);
+            //prx($result);
 	return $result;
 }
  ?>

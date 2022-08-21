@@ -42,7 +42,7 @@ class AuthController extends Controller
                    setcookie('login_email',$request->str_login_email,time()+60*60*24*100);
                    setcookie('login_pwd',$request->str_login_password,time()+60*60*24*100);
                 }
- 
+
                 $request->session()->put('RANK',$role->rank);
                 $request->session()->put('USER_ID',$user->id);
                 $request->session()->put('USER_NAME',$user->name);

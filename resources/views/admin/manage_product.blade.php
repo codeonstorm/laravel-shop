@@ -10,6 +10,8 @@
    </button>
 </div>
 @endif
+@include('admin.partitions.multi-img-upload-modal')
+@include('admin.partitions.product-attr-features-modal')
 <form role="form" action="{{route('product.manage_product_process')}}" method="post" enctype="multipart/form-data">
    <div class="card">
       <div class="card-header" style="background-color:#ffc107;">
@@ -119,14 +121,14 @@
    <h3>Add Product Attributes</h3>
    <div id="product_attr_box">
       @php
-      $loop_count_num=1;
+      $loop_count_num=0;
       @endphp
       @foreach($productAttrArr as $key=>$pAArr)
-      @php
-      $loop_count_prev=$loop_count_num;
+  @php
+    //  $loop_count_prev=$loop_count_num;
       @endphp
       <input id="paid" type="hidden" name="paid[]" value="{{$pAArr['id']}}">
-      <div class="card" id="product_attr_{{$loop_count_num++}}">
+      <div class="card" id="product_attr_{{$loop_count_num}}">
          <div class="card-body">
             <div class="form-group">
                <div class="row">
@@ -174,12 +176,20 @@
                   </div>
                   <div class="col-md-4">
                      <label for="attr_image" class="control-label mb-1"> Image</label>
-                     <input id="attr_image" name="attr_image[]" type="file" class="form-control" aria-required="true" aria-invalid="false" >
+                     @php
+                      $img_is = $loop_count_num - 1;
+                     @endphp
+                     <input id="attr_image" name="attr_image[{{$loop_count_num}}][]" type="file" class="form-control"   multiple>
+                     <a href="#sort" data-toggle="modal"><button type="button" class="multi_images_modal btn btn-warning"  value="{{$pAArr['id']}}">Uploded Images</button></a>
+                     <a href="#features" data-toggle="modal"><button type="button" class="pro_attr_features btn btn-warning"  value="{{$pAArr['id']}}">Add Features</button></a>
+                <!--     <input id="attr_image" name="attr_image[{{$pAArr['id']}}][]" type="file" class="form-control" multiple>-->
+<!--
+                     <input id="images" name="attr_image[]" type="file" onchange="image_select()" class="form-control" multiple>
+                        <div id="images_show"></div> -->
                   </div>
                   <div class="col-md-2">
-                     <label for="attr_image" class="control-label mb-1">
-                     &nbsp;&nbsp;&nbsp;</label>
-                     @if($loop_count_num==2)
+
+                     @if($loop_count_num!=0)
                      <!--<button type="button" class="btn btn-success btn-lg" onclick="add_more()">
                         <i class="fa fa-plus"></i>&nbsp; Add</button>-->
                      @else
@@ -191,6 +201,9 @@
             </div>
          </div>
       </div>
+      @php
+      $loop_count_num++;
+      @endphp
       @endforeach
    </div>
    <!--Add Product Attributes-->
@@ -209,7 +222,7 @@
 
    <!------------------------>
    <!-- /.col -->
- 
+
    @if($is_edit)
    <button type="submit" class="form-control" style="background-color:#007bff;
       color:#fff;" name="update" value="submit">Update</button>
@@ -221,49 +234,91 @@
 </form>
 
 <script>
-   function upload_img1(){
-     var upload = document.getElementById("img1").value;
-      if(img1.files[0].size<1048576){
-        var url=URL.createObjectURL(img1.files[0]);
-       var image=document.getElementById("demoimg1");
-       demoimg1.src = url;
-     }else{
-       alert('image size is too large !');
-     }}
-     /* image2 */
-     function upload_img2(){
-       var upload = document.getElementById("img2").value;
-        if(img2.files[0].size<1048576){
-          var url=URL.createObjectURL(img2.files[0]);
-         var image=document.getElementById("demoimg2");
-         demoimg2.src = url;
-       }else{
-         alert('image2 size is too large !');
-       }}
-       /* image 3 */
-       function upload_img3(){
-         var upload = document.getElementById("img3").value;
+// var images = [];
+// function image_select(){
+//    var image = document.getElementById('images').files;
+//    for (i=0; i<image.length; i++){
+//       if(check_duplicate_img(image[i].name)){
+//          images.push({
+//          "name" : image[i].name,
+//          "url" : URL.createObjectURL(image[i]),
+//          "file" : image[i],
+//          "size" : image[i].size,
+//       });
+//       }else{ alert('This image ('+image[i].name+' is already! )'); }
+//    }
+//    console.log(image);
+//    //document.getElementById('images').;
+//    document.getElementById('images_show').innerHTML=images_show();
+// }
 
-         if(img3.files[0].size<1048576){
+// function images_show(){
+//    var imgs = "";
+//    images.forEach((e)=>{
+//       imgs+='<div><img src="'+e.url+'" width="100px"><span class="position-absolute" style="cursor:pointer;" onclick="delete_img('+images.indexOf(e)+')">&times;</span></div>';
+//    });
+//    return imgs;
+// }
 
-           var url=URL.createObjectURL(img3.files[0]);
-           var image=document.getElementById("demoimg3");
-           demoimg3.src = url;
-         }else{
-           alert('image size is too large !');
-         }}
-         /* image 4 */
-         function upload_img4(){
-           var upload = document.getElementById("img4").value;
+// function delete_img(index){
+//    images.splice(index, 1);
+//   // document.getElementById('images').files=images;
+//    document.getElementById('images_show').innerHTML=images_show();
+// }
 
-           if(img4.files[0].size<1048576){
-
-             var url=URL.createObjectURL(img4.files[0]);
-             var image=document.getElementById("demoimg4");
-             demoimg4.src = url;
-           }else{
-             alert('image size is too large !');
-           }}
+// function check_duplicate_img(name){
+//    if(images.length>0){
+//       for(e=0; e<images.length; e++){
+//          if(images[e].name == name){
+//             return false;
+//          }
+//       }
+//    }
+//    return true;
+// }
+   // function upload_img1(){
+   //   var upload = document.getElementById("img1").value;
+   //    if(img1.files[0].size<1048576){
+   //      var url=URL.createObjectURL(img1.files[0]);
+   //     var image=document.getElementById("demoimg1");
+   //     demoimg1.src = url;
+   //   }else{
+   //     alert('image size is too large !');
+   //   }}
+   //   /* image2 */
+   //   function upload_img2(){
+   //     var upload = document.getElementById("img2").value;
+   //      if(img2.files[0].size<1048576){
+   //        var url=URL.createObjectURL(img2.files[0]);
+   //       var image=document.getElementById("demoimg2");
+   //       demoimg2.src = url;
+   //     }else{
+   //       alert('image2 size is too large !');
+   //     }}
+   //     /* image 3 */
+   //     function upload_img3(){
+   //       var upload = document.getElementById("img3").value;
+   //
+   //       if(img3.files[0].size<1048576){
+   //
+   //         var url=URL.createObjectURL(img3.files[0]);
+   //         var image=document.getElementById("demoimg3");
+   //         demoimg3.src = url;
+   //       }else{
+   //         alert('image size is too large !');
+   //       }}
+   //       /* image 4 */
+   //       function upload_img4(){
+   //         var upload = document.getElementById("img4").value;
+   //
+   //         if(img4.files[0].size<1048576){
+   //
+   //           var url=URL.createObjectURL(img4.files[0]);
+   //           var image=document.getElementById("demoimg4");
+   //           demoimg4.src = url;
+   //         }else{
+   //           alert('image size is too large !');
+   //         }}
 
            // imp
 
@@ -288,7 +343,7 @@
 
           html+='<div class="col-md-2"><label for="qty" class="control-label mb-1"> Qty</label><input id="qty" name="qty[]" type="text" class="form-control" aria-required="true" aria-invalid="false" required></div>';
 
-          html+='<div class="col-md-4"><label for="attr_image" class="control-label mb-1"> Image</label><input id="attr_image" name="attr_image[]" type="file" class="form-control" aria-required="true" aria-invalid="false" ></div>';
+          html+='<div class="col-md-4"><label for="attr_image" class="control-label mb-1"> Image</label><input id="attr_image" name="attr_image['+loop_count+'][]" type="file" class="form-control"   multiple></div>';
 
           html+='<div class="col-md-2"><label for="attr_image" class="control-label mb-1"> &nbsp;&nbsp;&nbsp;</label><button type="button" class="btn btn-danger btn-lg" onclick=remove_more("'+loop_count+'")><i class="fa fa-minus"></i>&nbsp; Remove</button></div>';
 
@@ -299,5 +354,6 @@
       function remove_more(loop_count){
            jQuery('#product_attr_'+loop_count).remove();
       }
+
 </script>
 @endsection

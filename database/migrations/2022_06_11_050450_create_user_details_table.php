@@ -21,6 +21,7 @@ class CreateUserDetailsTable extends Migration
             $table->string('state');
             $table->string('zip');
             $table->string('company')->nullable();
+            $table->string('country');
           //  $table->timestamps();
         });
     }

@@ -13,8 +13,11 @@
     <div class="checkout-area col-12">
       <div class="card shadow-none">
         <div class="card-header border-0">
-          @if(session()->has('FRONT_USER_LOGIN')==null)
-          <input type="button" value="Login" class="btn btn-primary" value="Login"><br><br> OR <br><br>
+          @if(session()->has('USER_ID')==null)
+          <a href="{{url('login')}}">
+          <input type="button" value="Login" class="btn btn-primary" value="Login">
+          </a>
+          <br><br> OR <br><br>
           @endif
           <h2 class="card-title" style="letter-spacing: .1em;
           text-transform: uppercase;"><b>User Details Address</b></h2>
@@ -42,10 +45,11 @@
               </div>
 
               <div class="row">
-                <div class="form-group col-12">
+                <div class="form-group col-8">
                   <label for="exampleInputEmail1">Address *</label>
                   <textarea type="text" class="form-control" id="exampleInputEmail1" name="address" placeholder="Enter Your Address" required>@if(isset($users->name)){{$users->address}}@endif</textarea>
                 </div>
+
               </div>
 
               <div class="row">
@@ -62,6 +66,17 @@
                   <input type="number" class="form-control" id="exampleInputPassword1" name="zip" value="@if(isset($users->zip)){{$users->zip}}@endif" name="zip" placeholder="Ex: 201306" required>
                 </div>
             </div>
+
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="company">Company (optional)</label>
+                <input type="text" class="form-control" id="company" name="company" value="@if(isset($users->company)){{$users->company}}@endif" name="city" placeholder="Enter Towm/City">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="country">country *</label>
+                <input type="text" class="form-control" id="country" name="country" value="@if(isset($users->country)){{$users->country}}@endif" name="state" placeholder="Enter State" required>
+              </div>
+          </div>
           </div>
 
           <!--order-details-->

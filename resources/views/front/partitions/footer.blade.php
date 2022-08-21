@@ -11,39 +11,33 @@
 <!-- /.control-sidebar -->
 
 <footer>
-  <div class="py-5 py-lg-6" style="background:#e9ecef;">
+  <div class="py-5 py-lg-6" style="background:#e9ecefd6;">
     <div class="container">
       <div class="row">
-        <div class="py-4 service-column col-lg-3 col-sm-6">
-          <svg class="svg-icon service-icon">
-            <use xlink:href="#delivery-time-1">
-            </use>
-          </svg>
-          <div class="service-text">
+        <div class="py-4 service-column col-lg-3 col-sm-6" style="align-items: normal" >
+          <i class="fas fa-shipping-fast pr-3 text-muted" style="font-size: 45px;"></i>
+
+          <div class="service-text text-muted letter-spacing">
             <h6 class="text-sm mb-1">Free shipping &amp; return</h6>
             <p class="text-muted fw-light text-sm mb-0">Free Shipping over $300</p>
           </div>
         </div>
-          <div class="py-4 service-column col-lg-3 col-sm-6">
-            <svg class="svg-icon service-icon">
-              <use xlink:href="#money-1">
-            </use></svg><div class="service-text">
+          <div class="py-4 service-column col-lg-3 col-sm-6" style="align-items: normal">
+            <i class="fas fa-recycle pr-3 text-muted" style="font-size: 45px;"></i>
+            <div class="service-text text-muted letter-spacing">
               <h6 class="text-sm mb-1">Money back guarantee</h6>
               <p class="text-muted fw-light text-sm mb-0">30 Days Money Back Guarantee</p>
             </div>
           </div>
-          <div class="py-4 service-column col-lg-3 col-sm-6">
-            <svg class="svg-icon service-icon">
-              <use xlink:href="#special-price-1"></use>
-            </svg><div class="service-text">
+          <div class="py-4 service-column col-lg-3 col-sm-6" style="align-items: normal">
+            <i class="fas fa-rupee-sign pr-3 text-muted" style="font-size: 45px;"></i>
+            <div class="service-text text-muted letter-spacing">
               <h6 class="text-sm mb-1">Best prices</h6>
               <p class="text-muted fw-light text-sm mb-0">Always the best prices</p>
             </div></div>
-            <div class="py-4 service-column col-lg-3 col-sm-6">
-              <svg class="svg-icon service-icon">
-                <use xlink:href="#customer-support-1"></use>
-              </svg>
-              <div class="service-text">
+            <div class="py-4 service-column col-lg-3 col-sm-6" style="align-items: normal">
+              <i class="fas fa-handshake pr-3 text-muted" style="font-size: 45px;"></i>
+              <div class="service-text text-muted letter-spacing">
                 <h6 class="text-sm mb-1">020-800-456-747</h6>
                 <p class="text-muted fw-light text-sm mb-0">24/7 Available Support</p>
               </div></div></div></div></div>
@@ -54,14 +48,13 @@
                       <h6 class="text-dark letter-spacing mb-4">Be in touch</h6>
                       <p class="text-sm mb-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. At itaque temporibus.</p>
                       <form class="">
-                        <div class="input-group-underlined mb-3 input-group">
-                          <input type="email" placeholder="Your Email Address" aria-label="Your Email Address" class="form-control-underlined form-control">
-                          <button type="submit" aria-label="confirm email" class="ms-0 text-gray-700 py-0 btn btn-underlined">
-                            <svg class="svg-icon w-2rem h-2rem"><use xlink:href="#envelope-1"></use>
-                            </svg></button></div></form></div><div class="col-lg-7">
+                        <div class="input-group-underlined mb-3 input-group col-sm-12 col-md-8">
+                          <input type="email" placeholder="Your Email Address" class="form-control-underlined form-control" style="border:1px solid #bcac76;">
+                          <button type="submit" class="ms-0 text-gray-700 py-0 btn" style="background: #bcac76; border-radius:0;">
+                            <i class="fas fa-envelope"></i></button></div></form></div><div class="col-lg-7">
                               <div class="row">
 
-                               
+
                                 <div class="col-md-4">
                                     <div class="card shadow-none collapsed-card">
                                       <div class="card-header p-0">
@@ -76,18 +69,18 @@
                                       <div class="card-body expand-lg collapse p-0">
                                         <ul class="list-unstyled text-sm pt-2 pt-lg-0">
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">For Women</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('women')}}">For Women</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">For Men</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('men')}}">For Men</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">Stores</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('accessories')}}">Accessories</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">Our Blog</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('Books')}}">Books</a>
                                           </li>
-                                          <li class="mb-2"><a class="text-muted text-hover-dark link-animated" href="/category-full#">Shop</a></li>
+                                          <li class="mb-2"><a class="text-muted text-hover-dark link-animated" href="{{url('home-and-kitchen')}}">Home & Kitchens</a></li>
                                         </ul>
                                       </div>
                                       <!-- /.card-body -->
@@ -108,18 +101,18 @@
                                       <div class="card-body expand-lg collapse p-0">
                                         <ul class="list-unstyled text-sm pt-2 pt-lg-0">
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">For Women</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('/about-us')}}">About-Us</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">For Men</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('/contact-us')}}">Contact-Us</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">Stores</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('')}}">Stores</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">Our Blog</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('')}}">Our Blog</a>
                                           </li>
-                                          <li class="mb-2"><a class="text-muted text-hover-dark link-animated" href="/category-full#">Shop</a></li>
+                                          <li class="mb-2"><a class="text-muted text-hover-dark link-animated" href="{{url('')}}">Home</a></li>
                                         </ul>
                                       </div>
                                       <!-- /.card-body -->
@@ -140,18 +133,24 @@
                                       <div class="card-body expand-lg collapse p-0">
                                         <ul class="list-unstyled text-sm pt-2 pt-lg-0">
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">For Women</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('/orders')}}">order</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">For Men</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('/cart')}}">cart</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">Stores</a>
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('/profile')}}">profile</a>
                                           </li>
                                           <li class="mb-2">
-                                            <a class="text-muted text-hover-dark link-animated" href="/category-full#">Our Blog</a>
+                                            @if(session()->get('USER_ID'))
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('logout')}}">logout</a>
+                                            @else
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('login')}}">sign in</a>
+                                            @endif
                                           </li>
-                                          <li class="mb-2"><a class="text-muted text-hover-dark link-animated" href="/category-full#">Shop</a></li>
+                                          <li class="mb-2">
+                                            <a class="text-muted text-hover-dark link-animated" href="{{url('signup')}}">sign up</a>
+                                          </li>
                                         </ul>
                                       </div>
                                       <!-- /.card-body -->

@@ -5,19 +5,20 @@
 <link rel="stylesheet" href="{{asset('dist/css/custom/carousel.css')}}">
 <style>
 .category-box{
-  overflow-x:scroll; 
-  overflow-y:hidden;    
-   margin-top: -61px;    
-   margin-bottom: 12px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  margin-top: -77px;
+  margin-bottom: 22px;
 }
 .box{
-  width:auto; 
+  width:auto;
   white-space:nowrap;
 }
 .category-img{
-  display:inline-block; 
-  width:120px; 
-  padding:1%;
+  display:inline-block;
+  width:50px;
+  max-height:60px;
+  padding:0.5%;
 }
 
 
@@ -78,14 +79,18 @@
        <x-front.card_product :product=$product :attr=$attrs :image=$img/>
       @endforeach
     </div>
+
+
+    <div class="row">
+      <img class="col-9 m-auto" src="{{asset('images/images.jpeg')}}" alt="">
+    </div><br><br><br>
   </div>
 </div>
+
+
 @endsection
 
 
-@section('small_banner')
-  @include('front.partitions.small_banner')
-@endsection
 
 @section('footer')
   @include('front.partitions.footer')

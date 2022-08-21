@@ -423,4 +423,107 @@
     $('.product-image-thumb.active').removeClass('active');
     $(this).addClass('active');
   });
+
+  ///////////////add to cart cart page//////
+  function update(attr_id, newNum, card){
+
+  	jQuery.ajax({
+        type:'post',
+        url:'/add_to_cart',
+        data:'product_attr_id='+attr_id+'&qty='+newNum+'&_token='+jQuery("[name='_token']").val(),
+        success:function(result){
+          if(newNum==0){
+            $('.cart_box_'+attr_id).remove();
+          }
+            alert('your product '+result.msg+' from cart!');
+            jQuery('.badge').html(result.totalItem);
+            card.parent().parent().parent().parent().next().find('.product_price').html(result.updated_pro_amt);
+            jQuery('.price').html(result.total_price);
+            jQuery('.total_price').html(result.total_price);
+
+  	  }
+  	});
+  }
+
+  $(".items-increase").on("click", function(e){
+    var id = $(this).prev().attr('id');
+    var num = $(this).prev().val();
+      var newNum=parseInt(num)+1;
+      $(this).prev().val(newNum);
+      update(id, newNum, $(this));
+  });
+
+  $(".items-decrease").on("click", function(e){
+    var id = $(this).next().attr('id');
+    var num = $(this).next().val();
+    if(num>0){
+      var newNum=parseInt(num)-1;
+      $(this).next().val(newNum);
+      update(id, newNum, $(this));
+    }
+    });
+
+    //remove from carts
+    $(".remove").on("click", function(e){
+      var attrId = $(this).parent().prev().prev().find('input').attr('id');
+      update(attrId, 0, $(this));
+
+    });
+///cart end
+
+
+//front Features
+$('#product-comments-tab').click(function (){
+  if($(this).attr('data-features')=='false'){
+    var attrId = $(this).attr('data-info');
+    jQuery.ajax({
+        type:'post',
+        url:'/product_attr_features',
+        data:'attr_id='+attrId+'&_token='+jQuery("[name='_token']").val(),
+        success:function(result){
+        var data = jQuery.parseJSON(result.data);
+
+        var html = '';
+        $.each(data, function(heading, values){
+          html+='<div class=" col-md-6 mt-3"><div class="block"><p style="letter-spacing: .1em;text-transform: uppercase;"># '+heading+' -</p>';
+          $.each(values, function(key, val){
+            html+='<div class="row"><div class="col-4"><b class="letter-spacing" style=" white-space: nowrap;">'+key+' :</b></div><div class="col-6 ml-2"><p>'+val+'. </p></div></div>';
+          });
+          html+='</div></div>';
+
+        });
+
+        $('#features_data').append(html);
+      }
+    });
+  }
+  $(this).attr('data-features', 'true');
+});
+
+
+//front rating
+$('#product-rating-tab').click(function (){
+  if($(this).attr('data-rating')=='false'){
+    var attrId = $(this).attr('data-info');
+
+
+        var html = '';
+        html+='<div class="user-block"><img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">';
+          html+='<span class="username"><a href="#">Jonathan Burke Jr.</a><div class="rating">';
+
+               html+='<i class="fas fa-star text-warning"></i>';
+               html+='<i class="fas fa-star text-warning"></i>';
+               html+='<i class="fas fa-star text-warning"></i>';
+               html+='<i class="fas fa-star text-warning"></i>';
+               html+='<i class="fas fa-star text-warning"></i>';
+
+             html+='</div></span><span class="description pt-1">Shared publicly - 7:45 PM today</span></div>';
+
+        html+='<p class="ml-5">Lorem ipsum represents a long-held tradition for designers,typographers and the like. Some people hate it and argue forits demise, but others ignore.</p>';
+}
+$('#product-rating').find('.post').append(html);
+
+  $(this).attr('data-rating', 'true');
+});
+
 })(jQuery)

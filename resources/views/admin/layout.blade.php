@@ -164,6 +164,7 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
+
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
@@ -515,7 +516,7 @@
               </p>
             </a>
           </li>
-       
+
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon far fa-envelope"></i>
@@ -654,5 +655,112 @@
 <script src="{{asset('dist/js/pages/dashboard.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{asset('dist/js/demo.js')}}"></script>
+<script type="text/javascript">
+/* multi image handler **/
+  $(".multi_images_modal").each(function(){
+    var modalBtn = this;
+    modalBtn.addEventListener("click", function(e){
+      event.preventDefault();
+      if(e.target.value!='' && e.target.value>0){
+        var imgId = '';
+        	jQuery.ajax({
+              type:'post',
+              url:'{{route('multi_img_process')}}',
+              data:'product_attr_id='+e.target.value+'&imgId='+imgId+'&_token='+jQuery("[name='_token']").val(),
+              success:function(result){
+                if(result.status = 'success'){
+                  var img = '<div class="col-6 col-md-2" style="display:none"> <input type="hidden" name="pattrid" value="'+e.target.value+'"></div>';
+                  jQuery.each(result.imgs,function(key,val){
+                    img+='<div class="col-6 col-md-2"><div class="card card-warning"><div class="card-header"><h3 class="card-title">'+val.img+'</h3><div class="card-tools mt-2 pt-1"><button type="button" onclick="delete_img(`'+val.img+'`)" class="btn btn-tool"><i class="fas fa-times"></i></button></div></div><div class="card-body p-1"><img src="{{asset("storage/media/product/")}}/'+val.img+'" style="width:100%;" alt=""></div></div></div>';
+                  });
+                  jQuery('#images_box').html(img);
+                }
+        	  }
+        	});
+
+      }
+    });
+  });
+
+  function delete_img(imgId){
+   var images_box =$('#images_box');
+   var pattrid = images_box.find('input').val();
+   if(imgId!=''){
+     jQuery.ajax({
+          type:'post',
+          url:'{{route('multi_img_process')}}',
+          data:'product_attr_id='+pattrid+'&imgId='+imgId+'&_token='+jQuery("[name='_token']").val(),
+          success:function(result){
+
+            if(result.status = 'success'){
+              var img = '<div class="col-6 col-md-2" style="display:none"> <input type="hidden" name="pattrid" value="'+pattrid+'"></div>';
+              jQuery.each(result.imgs,function(key,val){
+                img+='<div class="col-6 col-md-2"><div class="card card-warning"><div class="card-header"><h3 class="card-title">'+val.img+'</h3><div class="card-tools mt-2 pt-1"><button type="button" onclick="delete_img(`'+val.img+'`)" class="btn btn-tool"><i class="fas fa-times"></i></button></div></div><div class="card-body p-1"><img src="{{asset("storage/media/product/")}}/'+val.img+'" style="width:100%;" alt=""></div></div></div>';
+              });
+               $('#images_box').html(img);
+            }
+       }
+     });
+   }
+  }
+
+
+
+// $('#multiImgModalFrm').submit('click', function(e){
+//  e.preventDefault();
+//  jQuery.ajax({
+//       type:'post',
+//       url:'{{route('multi_img_process')}}',
+//       data: jQuery('#frmAddToCart').serialize()+'&_token='+jQuery("[name='_token']").val(),
+//       success:function(result){
+//         if(result.status = 'success'){
+//           var img = '<div class="col-6 col-md-2" style="display:none"> <input type="hidden" name="pattrid" value="'+e.target.value+'"></div>';
+//           jQuery.each(result.imgs,function(key,val){
+//             img+='<div class="col-6 col-md-2"><div class="card card-warning"><div class="card-header"><h3 class="card-title">'+val.img+'</h3><div class="card-tools mt-2 pt-1"><button type="button" onclick="delete_img(`'+val.img+'`)" class="btn btn-tool"><i class="fas fa-times"></i></button></div></div><div class="card-body p-1"><img src="{{asset("storage/media/product/")}}/'+val.img+'" style="width:100%;" alt=""></div></div></div>';
+//           });
+//           jQuery('#images_box').html(img);
+//         }
+//    }
+//  });
+// });
+//////////////
+  $('#new_heading').on('click', function(e){
+  var  html = '<div class="col-sm-12 p-4"><div class="form-group col-md-12"><label for="">Heading: </label><input type="text" class="form-control" name="heading[]" value="" onchange="change_field(this)" placeholder="Enter heading"></div>';
+        html+=' <div id="featured_box"><div class="box row"><div class="form-group col-md-5"><input type="text" class="form-control key" name="key" value="" placeholder="Enter Key"></div>';
+        html+=' <div class="form-group col-md-5"><input type="text" class="form-control value" name="value" value="" placeholder="Enter Value">';
+        html+=' </div></div></div><button type="button" class="btn btn-tool more_field" onclick="more_field(this)" data-card-widget="collapse" style="float: right; border: 1px solid #c33b15; border-radius: 50%;"><i class="fas fa-plus"></i></button></div>';
+
+$('aside').append(html);
+  });
+
+
+  /// Product attributes features
+$('.pro_attr_features').on('click',function(){
+  var value= $(this).val();
+  $('#attrFeaturesFrm').append('<input type="hidden" name="attr_id" value="'+value+'">')
+});
+
+function more_field(e){
+  var html = $(e).prev().children().first().clone();
+  html.find('input').val('');
+  html.append('<div class="form-group col-md-2"><button type="button" class="btn btn-tool" onclick="remove_field(this)" style="border: 1px solid #c33b15; border-radius: 50%;"><i class="fas fa-minus"></i></button></div>');
+  $(e).prev().append(html);
+
+}
+
+function remove_field(e){
+  e.parentNode.parentNode.remove();
+ }
+
+function change_field(e){
+  var value = $(e).val();
+  $(e).parent().next().find('.key').each(function(){
+      $(this).attr('name', 'key'+'['+value+']'+'[]');
+    });
+  $(e).parent().next().find('.value').each(function(){
+      $(this).attr('name', 'value'+'['+value+']'+'[]');
+    });
+}
+</script>
 </body>
 </html>

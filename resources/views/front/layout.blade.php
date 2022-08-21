@@ -12,6 +12,11 @@
   <link rel="stylesheet" href="{{asset('dist/css/custom/style.css')}}">
   <!--style-link-->
   @section('stylesheet')
+  <style media="screen">
+  .content-wrappers {
+  padding-top: 0rem;
+}
+  </style>
   @show
   <!--//style-link-->
 </head>
@@ -39,10 +44,6 @@
     <!-- /.content-wrapper -->
 
 
-  <!--<div class="">
-    <img src="file:///C:/Users/user/Pictures/Camera%20Roll/New%20Project%20(5).jpg" alt="">
-  </div>-->
-
   <!--footer-->
   @section('footer')
   @show
@@ -58,20 +59,21 @@
 <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{asset('dist/js/adminlte.min.js')}}"></script>
+<script src="{{asset('dist/js/demo.js')}}"></script>
 <script src="{{asset('dist/js/front-custom.js')}}"></script>
 <script src="{{asset('dist/js/custom/carousel.js')}}"></script>
 <script>
 
 var i = document.querySelectorAll('input[type="checkbox"]');
- 
+
 i.forEach((item) => {
-       
+
   item.addEventListener("click", function(e) {
          var name = e.target.name;
          var value = e.target.value;
-         
+
         if(name=="color"){
-          if(document.getElementById('color_'+e.target.id).classList.contains('color_active')){ 
+          if(document.getElementById('color_'+e.target.id).classList.contains('color_active')){
             document.getElementById('color_'+e.target.id).classList.remove("color_active");
             var oldvalue=document.getElementById('color_filter').value;
             var newVal = oldvalue.replace(value+":", '');
@@ -95,7 +97,7 @@ i.forEach((item) => {
             var newVal = oldvalue.replace(value+":", '');
             document.getElementById('brand_filter').value=newVal;
             document.getElementById('brand_filter').submit();
-          }   
+          }
         }
 
         if(name=='size'){
@@ -110,11 +112,11 @@ i.forEach((item) => {
             document.getElementById('categoryFilter').submit();
           }
         }
-       });  
+       });
    })
-   
-   
-   
+
+
+
 
 
 
@@ -877,7 +879,7 @@ i.forEach((item) => {
             if ($.contains(this.$cache.cont[0], e.target) || this.dragging) {
                 this.callOnFinish();
             }
-            
+
             this.dragging = false;
         },
 
@@ -2496,7 +2498,7 @@ i.forEach((item) => {
 // Trigger
 
 $(function () {
-  
+
 var $range = $(".js-range-slider"),
     $inputFrom = $(".js-input-from"),
     $inputTo = $(".js-input-to"),
@@ -2520,7 +2522,7 @@ $range.ionRangeSlider({
     prettify_separator: ".",
   values_separator: " - ",
   force_edges: true
-  
+
 
 });
 
@@ -2529,21 +2531,21 @@ instance = $range.data("ionRangeSlider");
 function updateInputs (data) {
     from = data.from;
     to = data.to;
-    
+
     $inputFrom.prop("value", from);
-    $inputTo.prop("value", to); 
+    $inputTo.prop("value", to);
 }
 
 $inputFrom.on("input", function () {
     var val = $(this).prop("value");
-    
+
     // validate
     if (val < min) {
         val = min;
     } else if (val > to) {
         val = to;
     }
-    
+
     instance.update({
         from: val
     });
@@ -2551,29 +2553,29 @@ $inputFrom.on("input", function () {
 
 $inputTo.on("input", function () {
     var val = $(this).prop("value");
-    
+
     // validate
     if (val < from) {
         val = from;
     } else if (val > max) {
         val = max;
     }
-    
+
     instance.update({
         to: val
     });
 });
 
     });
-   
-   
-   
-   
-   
-   
-   
-   
-   
+
+
+
+
+
+
+
+
+
    </script>
 </body>
 </html>

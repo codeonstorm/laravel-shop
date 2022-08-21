@@ -1,4 +1,4 @@
-  <div class="col-xl-3 col-sm-4 col-6">
+  <div class="col-xl-3 col-sm-4 col-6 mb-4">
   <div class="product product-type-0 aos-init aos-animate" data-aos="zoom-in" data-aos-delay="0">
   <div class="product-image mb-md-3"><a href="{{url('product/'.$product->slug)}}">
   <span style="box-sizing:border-box;
@@ -14,24 +14,19 @@
   </span>
   </a>
   <div class="product-hover-overlay">
-     <a class="text-dark text-sm" aria-label="add to cart" href="#">
-       <svg class="svg-icon text-hover-primary svg-icon-heavy d-sm-none">
-         <use xlink:href="#retail-bag-1">
-         </use></svg>
-         <span class="d-none d-sm-inline">Add to cart</span></a>
+    <div>
+      <i class="fas fa-cart-plus text-warning fa-lg"></i>
+      <span class="d-none d-sm-inline">Add to cart</span>
+    </div>
+
          <div>
-           <a class="text-dark text-hover-primary me-2" href="#" aria-label="add to wishlist">
-             <svg class="svg-icon svg-icon-heavy">
-               <use xlink:href="#heart-1"></use>
-             </svg></a>
+             <i class="fas fa-heart text-warning fa-lg"></i>
+           </div></div></div>
 
-             <a class="text-dark text-hover-primary text-decoration-none" href="#" aria-label="open quickview"><svg class="svg-icon svg-icon-heavy">
-               <use xlink:href="#expand-1"></use>
-             </svg></a></div></div></div>
-
-               <div class="position-relative"><h3 class="text-base mb-1">
-                 <a class="text-dark" href="{{url('product/'.$product->slug)}}">{{$product->name}}</a>
-               </h3>
+               <div class="position-relative">
+                <p class="text-base mb-1">
+                 <a class="text-dark text-muted" href="{{url('product/'.$product->slug)}}">{{$product->name}}</a>
+               </p>
                <span style="font-weight:700 !important; font-size:1.3rem !important;
                 line-height:1.25 !important; color:#812704 !important;">₹{{$attr->price}}</span>
                 <span style="text-decoration:line-through !important;

@@ -40,6 +40,7 @@
         <tr>
           <th>category ID</th>
           <th>name</th>
+          <th>image</th>
           <th>&nbsp;&nbsp;category</th>
           <th>Slug</th>
           <th>Short Desc</th>
@@ -56,6 +57,7 @@
           <tr>
             <td>{{$list->id}}</td>
             <td>{{$list->name}}</td>
+            <td><img src="{{asset('/storage/media/product/')}}" alt=""></td>
             <td>{{$list->cat_id}}</td>
             <td>{{$list->slug}}</td>
             <td>{{$list->short_desc}}</td>

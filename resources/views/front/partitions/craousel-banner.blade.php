@@ -6,7 +6,7 @@
         <div class="carouselSlide" id="carouselSlide" style="transform: translateX(-1600px);">
               <!-- items -->  <!--last clone-->
            <div class="itemContainer clone" data-clone="true"><!-- false 4time true at end clone of T(L-1) term-->
-                <a href="ryrtthjhgj">
+                <a href="{{url('')}}">
                   <div class="imgcontainer">
                  <!--   <picture>
                       <source media="(min-width:650px)" srcset="file:///F:/XAMPP/htdocs/example/carosule/d030a0a96cbfcb93.jpg">
@@ -17,7 +17,7 @@
           </div>
                        <!-- items -->  <!--last clone-->
               <div class="itemContainer" data-clone="true"><!-- false 4time true at end clone of Lth term -->
-                   <a href="ankit">
+                   <a href="{{url('')}}">
                      <div class="imgcontainer">
                     <!--   <picture>
                          <source media="(min-width:650px)" srcset="file:///F:/XAMPP/htdocs/example/carosule/d030a0a96cbfcb93.jpg">
@@ -28,7 +28,7 @@
              </div>
                     <!-- items -->  <!--last clone-->
               <div class="itemContainer" data-clone="true"><!-- false 4time true at end -->
-                   <a href="ryrt">
+                   <a href="{{url('')}}">
                      <div class="imgcontainer">
                     <!--   <picture>
                          <source media="(min-width:650px)" srcset="file:///F:/XAMPP/htdocs/example/carosule/d030a0a96cbfcb93.jpg">
@@ -39,7 +39,7 @@
              </div>
                     <!-- items -->  <!--last clone-->
               <div class="itemContainer" data-clone="true"><!-- false 4time true at end -->
-                   <a href="ryrt">
+                   <a href="{{url('')}}">
                      <div class="imgcontainer">
                     <!--   <picture>
                          <source media="(min-width:650px)" srcset="file:///F:/XAMPP/htdocs/example/carosule/d030a0a96cbfcb93.jpg">
@@ -50,7 +50,7 @@
              </div>
                     <!-- items -->  <!--last clone-->
               <div class="itemContainer" data-clone="true"><!-- false 4time true at end -->
-                   <a href="ryrtthjhgj">
+                   <a href="{{url('')}}">
                      <div class="imgcontainer">
                     <!--   <picture>
                          <source media="(min-width:650px)" srcset="file:///F:/XAMPP/htdocs/example/carosule/d030a0a96cbfcb93.jpg">
@@ -62,7 +62,7 @@
 
             <!-- items -->
             <div class="itemContainer clone"><!-- false 4time true at end style="transform: translateX(5760px);"-->
-             <a href="ankit">
+             <a href="{{url('')}}">
                <div class="imgcontainer ">
              <!--     <picture>
                    <source media="(min-width:650px)" srcset="file:///F:/XAMPP/htdocs/example/carosule/d030a0a96cbfcb93.jpg">

@@ -42,16 +42,16 @@
                       <td><span class="badge badge-info">{{$order->status}}</span></td>
                       @endif
                       <td><!--badge-warning badge-danger badge-info-->
-                        <div class="sparkbar" data-color="#00a65a" data-height="20">{{$order->created_at}}</div>
+                        <div class="sparkbar" data-color="#00a65a" data-height="20">@php echo getCustomDate($order->created_at) @endphp</div>
                       </td>
                     </tr>
-                    @endforeach              
+                    @endforeach
                     </tbody>
                   </table>
                 </div>
                 <!-- /.table-responsive -->
               </div>
-              <!-- /.card-body  
+              <!-- /.card-body
               <div class="card-footer clearfix">
                 <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
                 <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>

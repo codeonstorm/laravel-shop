@@ -15,6 +15,13 @@ class CreateCouponsTable extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('code');
+            $table->float('value');
+            $table->text('type');
+            $table->float('min_order_amt');
+            $table->TinyInteger('is_one_time');
+            $table->TinyInteger('status');
             $table->timestamps();
         });
     }

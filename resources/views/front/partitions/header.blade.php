@@ -7,7 +7,7 @@ $totalPrice=0;
   <div class="top-bar text-sm ">
     <div class="px-lg-5 py-2 container-fluid">
       <div class="align-items-center row">
-        ss
+
       </div>
     </div>
   </div>
@@ -30,48 +30,10 @@ $totalPrice=0;
           <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
           </li>
-          <!--<li class="nav-item">
-            <a href="{{url('')}}" class="nav-link">Home</a>
-          </li>
-          <li class="nav-item">
-            <a href="{{url('contact-us')}}" class="nav-link">Contact</a>
-          </li>-->
-<!--
-          <li class="nav-item dropdown">
-            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Dropdown</a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-              <li><a href="#" class="dropdown-item">Some action </a></li>
-              <li><a href="#" class="dropdown-item">Some other action</a></li>
-
-              <li class="dropdown-divider"></li>
-
-               Level two dropdown 
-              <li class="dropdown-submenu dropdown-hover">
-                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Hover for action</a>
-                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                  <li>
-                    <a tabindex="-1" href="#" class="dropdown-item">level 2</a>
-                  </li>
-
-                   Level three dropdown 
-                  <li class="dropdown-submenu">
-                    <a id="dropdownSubMenu3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">level 2</a>
-                    <ul aria-labelledby="dropdownSubMenu3" class="dropdown-menu border-0 shadow">
-                      <li><a href="#" class="dropdown-item">3rd level</a></li>
-                      <li><a href="#" class="dropdown-item">3rd level</a></li>
-                    </ul>
-                  </li>
-                    End Level three  
-
-                  <li><a href="#" class="dropdown-item">level 2</a></li>
-                  <li><a href="#" class="dropdown-item">level 2</a></li>
-                </ul>
-              </li>
-    End Level two -->
             </ul>
           </li>
 
-             
+
         </ul>
 
         <!-- SEARCH FORM -->
@@ -89,63 +51,43 @@ $totalPrice=0;
 
       <!-- Right navbar links -->
       <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
-              class="fas fa-shopping-cart"></i>
-              <span class="badge badge-warning navbar-badge">{{$totalCartItem}}</span>
-              </a>
+        <li class="nav-item pt-2">
+          @if(session()->get('USER_ID'))
+          <a class="text-muted text-hover-dark" href="{{url('logout')}}">logout</a>
+          @else
+          <a class="text-muted text-hover-dark" href="{{url('login')}}">login</a>
+          @endif
         </li>
-        
+        <li class="nav-item">
+          <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge badge-warning navbar-badge">{{$totalCartItem}}</span>
+          </a>
+        </li>
+
       </ul>
     </div>
   </nav>
   <!-- /.navbar -->
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand-md navbar-light navbar-white border-0">
+    <style media="screen">
+      .dropdown-menu{
+position: relative;
+position:static;
+ float: right;
+
+ width:255px;
+      }
+    </style>
+  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white border-0 show">
     <div class="container">
-
       <div class="collapse navbar-collapse order-3" id="navbarCollapse">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-         <!-- <li class="nav-item dropdown">
-            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Dropdown</a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-              <li><a href="#" class="dropdown-item">Some action </a></li>
-              <li><a href="#" class="dropdown-item">Some other action</a></li>
+        <ul class="navbar-nav" style="    flex-direction: column;">
 
-              <li class="dropdown-divider"></li>
-
-              -- Level two dropdown--
-              <li class="dropdown-submenu dropdown-hover">
-                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Hover for action</a>
-                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                  <li>
-                    <a tabindex="-1" href="#" class="dropdown-item">level 2</a>
-                  </li>
-
-                  -- Level three dropdown--
-                  <li class="dropdown-submenu">
-                    <a id="dropdownSubMenu3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">level 2</a>
-                    <ul aria-labelledby="dropdownSubMenu3" class="dropdown-menu border-0 shadow">
-                      <li><a href="#" class="dropdown-item">3rd level</a></li>
-                      <li><a href="#" class="dropdown-item">3rd level</a></li>
-                    </ul>
-                  </li>
-                  -- End Level three --
-
-                  <li><a href="#" class="dropdown-item">level 2</a></li>
-                  <li><a href="#" class="dropdown-item">level 2</a></li>
-                </ul>
-              </li>
-               -- End Level two -- 
-            </ul>
-          </li> -->
-
-            {!! getTopNavCat() !!}
         </ul>
       </div>
     </div>
+
   </nav>
   <!-- /.navbar -->
 </header>
-

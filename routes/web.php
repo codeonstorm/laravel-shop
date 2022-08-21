@@ -27,9 +27,15 @@ Route::post('signup/process/',[AuthController::class,'registration_process'])->n
 Route::get('login/',[AuthController::class,'authentication'])->name('login');
 Route::post('login/process',[AuthController::class,'authentication_process'])->name('login_process');
 Route::get('logout', function () {
+    session()->put('RANK',0);
     session()->forget('USER_ID');
     session()->forget('RANK');
     session()->forget('USER_NAME');
+    session()->forget('USER_EMAIL');
+    if(session()->get('ORDER_ID'))
+      session()->forget('ORDER_ID');
+    if(session()->get('USER_TEMP_ID'))
+      session()->forget('USER_TEMP_ID');
     return redirect('/');
 })->name('logout');
 /*
@@ -50,17 +56,26 @@ Route::get('search',[FrontController::class,'search']);
 Route::post('add_to_cart',[FrontController::class,'add_to_cart']);
 Route::get('cart',[FrontController::class,'cart']);
 Route::get('/checkout',[FrontController::class,'checkout']);
+Route::post('/product_attr',[FrontController::class,'product_attr']);// to product front page
+// product attr features
+Route::post('/product_attr_features',[FrontController::class,'product_attr_features']);// to product front page
+//place order
 Route::post('/place_order',[FrontController::class,'place_order']);
+
+
+// protected front routes
+Route::group(['middleware'=>'user_auth'],function(){
+
 Route::get('/order_placed',[FrontController::class,'order_placed']);
 Route::get('/order_fail',[FrontController::class,'order_fail']);
 Route::get('/instamojo_payment_redirect',[FrontController::class,'instamojo_payment_redirect']);
-Route::post('/product_attr',[FrontController::class,'product_attr']);// to product front page
-
-
-
-Route::group(['middleware'=>'user_auth'],function(){
+Route::post('apply_coupon_code',[FrontController::class,'apply_coupon_code']);
+Route::post('remove_coupon_code',[FrontController::class,'remove_coupon_code']);
 Route::get('/orders',[FrontController::class,'orders']);
 Route::get('/order_detail/{order_id}',[FrontController::class,'order_detail']);
+Route::get('/profile/',[FrontController::class,'profile_detail']);
+Route::post('/profile/update',[FrontController::class,'profile_detail']);
+Route::match(['get','post'],'/contact-us',[FrontController::class,'contact_us']);
 });
 
 
@@ -116,6 +131,10 @@ Route::group(['middleware'=>'admin_auth'],function(){
     Route::get('admin/product/delete/{id}',[ProductController::class,'delete']);
     Route::get('admin/product/status/{status}/{id}',[ProductController::class,'status']);
     Route::get('admin/product/product_attr_delete/{paid}/{pid}',[ProductController::class,'product_attr_delete']);
-    Route::get('admin/product/product_images_delete/{paid}/{pid}',[ProductController::class,'product_images_delete']);
+    Route::post('admin/product/multi_img_process',[ProductController::class,'multi_img_process'])->name('multi_img_process');
+
+
+    //Features
+    Route::post('admin/product/features',[ProductController::class,'product_attr_features']);
 
 });

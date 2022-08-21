@@ -8,7 +8,7 @@
 @section('main-sidebar')
   @include('front.partitions.main-sidebar')
 @endsection
-@php 
+@php
 getAddToCartTotalItem();
 @endphp
 @section('container')
@@ -19,21 +19,28 @@ getAddToCartTotalItem();
   	<div class="col-md-9">
   	@foreach($list as $list)
     <!-- card -->
-  	 <div class="card" style="box-shadow: none;">
+  	 <div class="card cart_box_{{$list->attr_id}}" style="box-shadow: none;">
   		<div class="card-body">
   			<div class="d-flex align-items-center row">
       		<div class="col-md-5 col-12">
-  				<a href="/tops-blouses/white-tee">
+  				<a href="{{url('product/'.$list->slug)}}">
       			<div class="d-flex align-items-center">
 
   							<img style="display: block; max-width: 28%; width: initial; height: initial;
   							background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; opacity: 1;
-  								border: 0px none; margin: 0px; padding: 0px;" alt="" aria-hidden="true" src="{{asset('storage/media/product/'.$list_img[$list->attr_id]->img)}}">
+  								border: 0px none; margin: 0px; padding: 0px;" alt=""
+                   src="{{asset('storage/media/product/'.$list_img[$list->attr_id]->img)}}">
 
   					<div class="text-start" style="padding-left: 15%;">
-  							<strong>{{$list->name}}</strong><br><span class="text-muted text-sm">
-  								{{$list->short_desc}}</span><br><span class="text-muted text-sm">Colour: Green
-  								</span>
+  							<strong>{{$list->name}}</strong>
+                <br><span class="text-muted text-sm">
+  								{{-- $list->short_desc --}}</span>
+                  @if($list->color)
+                  <br><span class="text-muted text-sm">Colour: {{$list->color}}</span>
+                  @endif
+                  @if($list->size)
+                  <br><span class="text-muted text-sm">Size: {{$list->size}}</span>
+                  @endif
   					</div>
   						</div>
   					</a>
@@ -49,9 +56,9 @@ getAddToCartTotalItem();
   											<div class="text-muted d-md-none col-sm-9 col-7">Quantity</div>
   											<div class="col-md-12 col-sm-3 col-5">
   												<div class="d-flex align-items-center">
-  													<button type="button" class="items-decrease btn btn-items" onclick="decrement()">-</button>
-  													<input type="number" class="text-center border-0 border-md input-items form-control" value="{{$list->qty}}" onchange="update({{$list->attr_id}})">
-  													<button type="button" class="items-increase btn btn-items" onclick="increment()">+</button>
+  													<button type="button" class="items-decrease btn btn-items"  >-</button>
+  													<input type="number" id="{{$list->attr_id}}" class="text-center border-0 border-md input-items form-control" value="{{$list->qty}}">
+  													<button type="button" class="items-increase btn btn-items"  >+</button>
   												</div>
   											</div>
   											</div>
@@ -59,11 +66,11 @@ getAddToCartTotalItem();
   													<div class="col-md-3">
   														<div class="row">
   														<div class="d-md-none text-muted col-6">Total price</div>
-  														<div class="text-end text-md-center col-md-12 col-6">$ {{$list->price * $list->qty}}</div>
+  														<div class="product_price text-end text-md-center col-md-12 col-6">$ {{$list->price * $list->qty}}</div>
   													</div>
   												</div>
   													<div class="d-none d-md-block text-center col-2">
-  													<button type="button" class="btn btn-tool remove" data-card-widget="remove" onclick="remove({{$list->attr_id}})"><i class="fas fa-times"></i></button>
+  													<button type="button" class="btn btn-tool remove"><i class="fas fa-times"></i></button>
   												</div>
   													</div></div></div>
   		</div>
@@ -73,10 +80,10 @@ getAddToCartTotalItem();
   	<!-- /.card -->
   	@endforeach
     <div class="d-flex justify-content-between flex-column flex-lg-row mb-5 mb-lg-0">
-      <a role="button" tabindex="0" href="/category-full" class="text-muted btn btn-link">
-        Continue Shopping
+      <a role="button" tabindex="0" href="{{url('')}}" class="text-muted btn btn-link">
+        << Continue Shopping
       </a>
-      <a role="button" tabindex="0" href="#" class="text-primary btn btn-link">
+      <a role="button" tabindex="0" href="{{url('/cart')}}" class="text-primary btn btn-link">
         <i class="fas fa-sync-alt"></i>
         Update cart
     </a>
@@ -104,18 +111,18 @@ getAddToCartTotalItem();
 								@endphp
 								<ul class="list-group list-group-unbordered mb-3">
 									<li class="list-group-item">
-										<b>Total Items</b> <a class="float-right">{{$totalCartItem}}</a>
+										<b>Total Items</b> <a class="float-right badge">{{$totalCartItem}}</a>
 									</li>
 									@foreach($getAddToCartTotalItem as $cartItem)
 										@php
 										$totalPrice=$totalPrice+($cartItem->qty*$cartItem->price)
 										@endphp
-									
-										{{--{{$cartItem->name}} 
+
+										{{--{{$cartItem->name}}
 										{{$cartItem->qty}} * Rs {{$cartItem->price}} --}}
 									@endforeach
 									<li class="list-group-item">
-										<b>Price</b> <a class="float-right">{{$totalPrice}}</a>
+										<b>Price</b> <a class="price float-right">{{$totalPrice}}</a>
 									</li>
 									<li class="list-group-item">
 										<b>Shipping and handling</b> <a class="float-right">287</a>
@@ -124,7 +131,7 @@ getAddToCartTotalItem();
 										<b>Tax/GST</b> <a class="float-right">200</a>
 									</li>
 									<li class="list-group-item">
-										<b>Total Price</b> <a class="float-right">11,287</a>
+										<b>Total Price</b> <a class="total_price float-right">11,287</a>
 									</li>
 								</ul>
 
@@ -141,49 +148,7 @@ getAddToCartTotalItem();
 	@csrf
 	</div>
 @endsection
-
-
-<script>
-
-function remove(attr_id){
-	jQuery.ajax({
-      type:'post',
-      url:'/add_to_cart',
-      data:'product_attr_id='+attr_id+'&pqty='+0+'&_token='+jQuery("[name='_token']").val(),
-      success:function(result){
-        alert('your product '+result.msg+' from cart!');
-
-      }
-    });
-}
-
-function update(attr_id){
-	var num = jQuery("[type='number']").val();
-	jQuery.ajax({
-      type:'post',
-      url:'/add_to_cart',
-      data:'product_attr_id='+attr_id+'&pqty='+num+'&_token='+jQuery("[name='_token']").val(),
-      success:function(result){
-        alert('your product '+result.msg+' from cart!');
-alert(attr_id);
-	  }
-	});
-}
-
-
-function increment(){
-	var num = jQuery("[type='number']");
-	num.val(int(num.val())+1);
-}
-
-function decrement(){
-	var num = jQuery("[type='number']").val()
-	alert(num);
-}
- 
-</script>
-
-
+<!--scriptint Demo -->
 @section('footer')
   @include('front.partitions.footer')
 @endsection

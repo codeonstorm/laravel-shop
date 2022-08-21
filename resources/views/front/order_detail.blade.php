@@ -31,7 +31,7 @@
                         <div class="col-12">
                           <h4>
                             <i class="fas fa-globe"></i> AdminLTE, Inc.
-                            <small class="float-right">{{$order->created_at}}</small>
+                            <small class="float-right">@php echo getCustomDate($order->created_at) @endphp</small>
                           </h4>
                         </div>
                         <!-- /.col -->
@@ -92,11 +92,11 @@
                   </tr>
                   </thead>
                   <tbody>
-                  @php 
+                  @php
                   $subtotal = 0;
                   @endphp
                   @foreach($orders_detail as $products_details)
-                  @php 
+                  @php
                   $subtotal += $products_details->price;
                   @endphp
                   <tr>
@@ -108,13 +108,17 @@
                     </td>
                     <td>$ {{$products_details->price}}</td>
                     <td>
+                      @if($products_details->size)
                       <small class="text-success mr-1">
                         size: {{$products_details->size}}
                       </small><br>
+                      @endif
+                      @if($products_details->color)
                       <small class="text-success mr-1">
                       colour: {{$products_details->color}}
                       </small>
-                      
+                      @endif
+
                     </td>
                     <td>
                     {{$products_details->qty}}

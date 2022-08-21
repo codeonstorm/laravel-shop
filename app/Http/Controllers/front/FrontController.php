@@ -14,7 +14,7 @@ class FrontController extends Controller
 
     public function index()
     {
-
+    //  prx(session()->all());
         $result['home_categories']=
         DB::table('categories')
         ->where(['status'=>1])
@@ -59,7 +59,7 @@ class FrontController extends Controller
        DB::table('products')
        ->where(['status'=>1])
        ->where(['is_tranding'=>1])
-       ->paginate(5);
+       ->paginate(8);
 
        foreach($result['home_tranding_product'] as $list){
            $result['home_tranding_product_attr'][$list->id]=
@@ -89,7 +89,7 @@ class FrontController extends Controller
       if($request->get('sort')!==null){
           $sort=$request->get('sort');
       }
-      
+
 
       $query=DB::table('products');
       $query=$query->leftJoin('categories','categories.id','=','products.cat_id');
@@ -115,7 +115,7 @@ class FrontController extends Controller
           $filter_price_start=$request->get('filter_price_start');
           $filter_price_end=$request->get('filter_price_end');
 
-          if($filter_price_end>0){            
+          if($filter_price_end>0){
               $query=$query->whereBetween('product_attributes.price',[$filter_price_start,$filter_price_end]);
           }
       }
@@ -132,12 +132,12 @@ class FrontController extends Controller
         $size_filter=$request->get('size_filter');
         $sizeFilterArr=explode(":",$size_filter);
         $sizeFilterArr=array_filter($sizeFilterArr);
-    
+
         $query=$query->whereIn('product_attributes.size_id',$sizeFilterArr);
     }
- 
+
       $query=$query->distinct()->select('products.*', 'categories.name as category', 'categories.slug as cat_slug');
-      $query=$query->get(); 
+      $query=$query->get();
       if($query->isEmpty()){
         prx('data not found');
       }
@@ -159,20 +159,20 @@ class FrontController extends Controller
 
           foreach($query1 as $attr){
             $arrSize[]=$attr->size;
-            if(!empty($attr->name)){ //check latter      
+            if(!empty($attr->name)){ //check latter
                 $arrColor[$attr->name]['id']=$attr->color_id;
                 $arrColor[$attr->name]['code']=$attr->code;
             }
           }
-         
+
       }
- 
+
       $result['sizes']=array_filter(array_unique($arrSize));
       $result['colors']=$arrColor;
 
       $result['sizes_left']=DB::table('sizes')
       ->where(['status'=>1])->get();
-      
+
       $result['categories_left']=DB::table('categories')
       ->where(['parent_id'=>$result['product'][0]->cat_id])
       ->where(['status'=>1])
@@ -185,9 +185,9 @@ class FrontController extends Controller
       $result['filter_price_start']=$filter_price_start;
       $result['filter_price_end']=$filter_price_end;
       $result['color_filter']=$color_filter;
-      $result['colorFilterArr']=$colorFilterArr; 
+      $result['colorFilterArr']=$colorFilterArr;
       $result['size_filter']=$size_filter;
-      $result['sizeFilterArr']=$sizeFilterArr; 
+      $result['sizeFilterArr']=$sizeFilterArr;
        // prx($result);
       return view('front.category',$result);
   }
@@ -197,9 +197,10 @@ class FrontController extends Controller
   {
           $result['product']=
            DB::table('products')
-           ->where(['status'=>1])
-           ->where(['slug'=>$slug])
-           ->first();
+           ->leftJoin('categories', 'categories.id', '=', 'products.cat_id')
+           ->where(['products.status'=>1])
+           ->where(['products.slug'=>$slug])
+           ->first(['products.*', 'categories.name as category', 'categories.slug as cat_slug']);
 
 
            if(isset($result['product'])){
@@ -210,8 +211,8 @@ class FrontController extends Controller
                ->leftJoin('colors','colors.id','=','pAttr.color_id')
                ->where(['pAttr.product_id'=>$result['product']->id])
                ->get(['pAttr.*','sizes.size', 'colors.name', 'colors.code']);
-              
-               //color based product 
+
+               //color based product
                if($color!=''){
                     $attrobj=
                     DB::table('product_attributes as pAttr')
@@ -221,11 +222,11 @@ class FrontController extends Controller
                     ->first(['pAttr.id']);
                     if($attrobj)
                         $result['attr__id']=$attrobj->id;
-                    
+
                } else{
                 $color = $result['product_attr'][0]->name;//colorname
-               }         
-               
+               }
+
             $arrSize=[];
             $arrColor=[];
             //product images
@@ -235,7 +236,7 @@ class FrontController extends Controller
                 ->where(['product_attributes_id'=>$attrlist->id])
                 ->get('img');
 
-                
+
                 if($attrlist->name==$color){
                     if($attrlist->size!='')
                      $arrSize[]=$attrlist->size;
@@ -248,9 +249,9 @@ class FrontController extends Controller
                  if($attrlist->id == $color)
                     $result['attr__id']=$attrlist->id;
                 }
-               
+
             }
-            
+
             $result['sizes']=array_unique($arrSize);
             $result['colors']=array_unique($arrColor);
 
@@ -286,32 +287,40 @@ class FrontController extends Controller
 
 
  /***rating session */
+$result['rating_err']='';
  if($request->get('rating')>0 && !empty($request->get('review'))){
-   $valid=Validator::make($request->all(),[
-       "rating"=>'required|integer',
-       "review"=>'required|string',
-  ]);
-   if(!$valid->passes()){
-       return response()->json(['status'=>'review_error','msg'=>"please fill correct!"]);
+
+
+   if(session()->get('USER_ID')){
+     $valid=Validator::make($request->all(),[
+         "rating"=>'required|integer',
+         "review"=>'required|string',
+    ]);
+     if(!$valid->passes()){
+         return response()->json(['status'=>'review_error','msg'=>"please fill correct!"]);
+     }
+     $check=DB::table('product_reviews')
+     ->where('user_id',session()->get("USER_ID"))
+     ->where('product_attributes_id',$request->get('id'))
+     ->exists();
+
+    if(!$check){
+        DB::table('product_reviews')
+        ->insert([
+            'user_id'=>session()->get('USER_ID'),
+            'product_attributes_id'=>$request->get('id'),
+            'rating'=>$request->get('rating'),
+            'review'=>$request->get('review'),
+            'status'=>1,
+            'created_at'=>date('Y-m-d h:m:s'),
+            'updated_at'=>date('Y-m-d h:m:s'),
+        ]);
+    }
+   }else{
+      $result['rating_err']='You have to login first!';
    }
-   $check=DB::table('product_reviews')
-   ->where('user_id',session()->get("USER_ID"))
-   ->where('product_attributes_id',$request->get('id'))
-   ->exists();
-  
-  if(!$check){
-      DB::table('product_reviews')
-      ->insert([
-          'user_id'=>session()->get('USER_ID'),
-          'product_attributes_id'=>$request->get('id'),
-          'rating'=>$request->get('rating'),
-          'review'=>$request->get('review'),
-          'status'=>1,
-          'created_at'=>date('Y-m-d h:m:s'),
-          'updated_at'=>date('Y-m-d h:m:s'),
-      ]);
-  }
- }
+}
+
 
 
 
@@ -324,7 +333,7 @@ class FrontController extends Controller
             ->select('product_review.rating','product_review.review','product_review.added_on','customers.name')
             ->get(); */
     }
-   
+
 
     //imp
     if(!empty($result['attr__id'])){
@@ -332,12 +341,12 @@ class FrontController extends Controller
          if($result['attr__id']==$value->id){
           $result['id']=$key;
          }
-        
+
         }
        }else{
         $result['id']=0;
        }
-      
+
 //prx($result['id']);
 //prx($result);
        return view('front.product',$result);
@@ -369,15 +378,16 @@ class FrontController extends Controller
           $query1=$query1->leftJoin('product_images','product_images.product_attributes_id','=','product_attributes.id');
           $query1=$query1->where(['product_attributes.product_id'=>$list1->id]);
           $query1=$query1->get();
-          $result['product_attributes'][$list1->id]=$query1;    
+          $result['product_attributes'][$list1->id]=$query1;
       }
      // prx($result);
       return view('front.search',$result);
   }
 
+
+
   public function add_to_cart(Request $request)
   {
-
       if($request->session()->has('USER_ID')){
           $uid=$request->session()->get('USER_ID');
           $user_type="Reg";
@@ -386,37 +396,34 @@ class FrontController extends Controller
           $user_type="Not-Reg";
       }
 
-      /*$size_id=$request->post('size_id');
-      $color_id=$request->post('color_id');
-      $product_id=$request->post('product_id');*/
-      $pqty=$request->post('qty');
       $product_attr_id=$request->post('product_attr_id');
-/*
-      $result=DB::table('product_attributes as attr')
-          ->select('attr.id')
-          ->leftJoin('sizes','sizes.id','=','products_attr.size_id')
-          ->leftJoin('colors','colors.id','=','products_attr.color_id')
-          ->where(['products_id'=>$product_id])
-          ->where(['sizes.size'=>$size_id])
-          ->where(['colors.color'=>$color_id])
-          ->get();
-      $product_attr_id=$result[0]->id;
-*/
-
-    /*  $getAvaliableQty=getAvaliableQty($product_attr_id);
-      $finalAvaliable=$getAvaliableQty[0]->pqty-$getAvaliableQty[0]->qty;
-      if($pqty>$finalAvaliable){
-          return response()->json(['msg'=>"not_avaliable",'data'=>"Only $finalAvaliable left"]);
+      $pqty = $request->post('qty');
+      if($pqty<0){
+        echo "<script>alert('product quantity can't be less than zero!)</script>";
+        return response()->json([]);
       }
-*/
 
-      $check=DB::table('carts')
-          ->where(['user_id'=>$uid])
-          ->where(['user_type'=>$user_type])
-        //  ->where(['product_id'=>$product_id])
-          ->where(['product_attr_id'=>$product_attr_id])
-          ->get();
+      if($request->post('size')){
+        $check=DB::table('products')
+            ->leftJoin('product_attributes as attr','attr.product_id','=','products.id')
+            ->leftJoin('sizes','sizes.id','=','attr.size_id')
+            ->leftJoin('carts','carts.product_attr_id','=','attr.id')
+            ->where(['sizes.size'=>$request->post('size')])
+            ->where(['products.slug'=>$request->post('slug')])
+            ->where(['carts.user_id'=>$uid])
+            ->where(['carts.user_type'=>$user_type])
+            ->get();
+      }else{
+        $check=DB::table('carts')
+            ->leftJoin('product_attributes as attr','attr.id','=','carts.product_attr_id')
+            ->leftJoin('products','products.id','=','attr.product_id')
+            ->where(['carts.user_id'=>$uid])
+            ->where(['carts.user_type'=>$user_type])
+            ->where(['product_attr_id'=>$product_attr_id])
+            ->get(['carts.id', 'attr.price', 'carts.qty']);
+      }
 
+ $updatedCartProductPrice = 0;
       if(isset($check[0])){
           $update_id=$check[0]->id;
           if($pqty==0){
@@ -429,9 +436,21 @@ class FrontController extends Controller
                   ->where(['id'=>$update_id])
                   ->update(['qty'=>$pqty]);
               $msg="updated";
+              $updatedCartProductPrice = $check[0]->price*$pqty;
           }
 
       }else{
+          if($request->post('size') && !isset($check[0])){
+            $check=DB::table('sizes')
+                ->leftJoin('product_attributes as attr','attr.size_id','=','sizes.id')
+                ->leftJoin('products','products.id','=','attr.product_id')
+                ->where(['sizes.size'=>$request->post('size')])
+                ->where(['products.slug'=>$request->post('slug')])
+                ->first('attr.id');
+
+                $product_attr_id=$check->id;
+          }
+
           $id=DB::table('carts')->insertGetId([
               'user_id'=>$uid,
               'user_type'=>$user_type,
@@ -444,22 +463,20 @@ class FrontController extends Controller
           $msg="added";
       }
 
-      $result=DB::table('carts')
-          ->leftJoin('product_attributes as attr','attr.id','=','carts.product_attr_id')
-          ->leftJoin('products','products.id','=','attr.product_id')
-          ->leftJoin('sizes','sizes.id','=','attr.size_id')
-          ->leftJoin('colors','colors.id','=','attr.color_id')
-          ->where(['user_id'=>$uid])
-          ->where(['user_type'=>$user_type])
-          ->select('carts.qty','products.name','sizes.size','colors.name','attr.price','products.slug','products.id as pid','attr.id as attr_id')
-          ->get();
-      return response()->json(['msg'=>$msg,'data'=>$result,'totalItem'=>count($result)]);
+      $getAddToCartTotalItem=getAddToCartTotalItem();
+      $totalCartItem=count($getAddToCartTotalItem);
+      $totalPrice=0;
+      foreach($getAddToCartTotalItem as $cartItem)
+       {
+        $totalPrice=$totalPrice+($cartItem->qty*$cartItem->price);
+      }
 
+      return response()->json(['msg'=>$msg,'updated_pro_amt'=>$updatedCartProductPrice,'total_price'=>$totalPrice,'totalItem'=>$totalCartItem]);
   }
 
 
   public function cart(Request $request)
-  {    
+  {
       if($request->session()->has('USER_ID')){
           $uid=$request->session()->get('USER_ID');
           $user_type="Reg";
@@ -474,16 +491,21 @@ class FrontController extends Controller
           ->leftJoin('colors','colors.id','=','product_attributes.color_id')
           ->where(['user_id'=>$uid])
           ->where(['user_type'=>$user_type])
-          ->select('carts.qty','products.name', 'products.short_desc','sizes.size','colors.name as color','product_attributes.price','products.slug','products.id as pid','product_attributes.id as attr_id')
+          ->select('carts.id as cart_id','carts.qty','products.name', 'products.short_desc','sizes.size','colors.name as color','product_attributes.price','products.slug','products.id as pid','product_attributes.id as attr_id')
           ->get();
 
           foreach ($result['list'] as  $list) {
+            //if price is 0 or product is deleted
+            if(!$list->price){
+              echo "<div style='color:red;'>".$list->name." is removed from your cart because this product service is no more!</div>";
+              DB::table('carts')->where(['id'=>$list->cart_id])->delete();
+            }
+
             $result['list_img'][$list->attr_id] =
             DB::table('product_images')
             ->where('product_attributes_id','=',$list->attr_id)->first('img');
           }
 
-       
           // prx($result);
             return view('front.cart',$result);
 
@@ -502,7 +524,7 @@ class FrontController extends Controller
                    $result['users']=DB::table('users')
                            ->leftJoin('user_details', 'user_details.user_id','=','users.id')
                        ->where('users.id',$uid)
-                        ->first(['name','email','mobile','address','city','state','zip']);
+                        ->first(['name','email','mobile','address','city','state','zip', 'company', 'country']);
 
                }
 
@@ -513,70 +535,95 @@ class FrontController extends Controller
        }
 
 
+       public function apply_coupon_code(Request $request)
+       {
+         echo "fffffff";
+            //$arr=apply_coupon_code($request->coupon_code);
+            //$arr=json_decode($arr,true);
+
+          //  return response()->json(['status'=>$arr['status'],'msg'=>$arr['msg'],'totalPrice'=>$arr['totalPrice']]);
+       }
+
+       public function remove_coupon_code(Request $request)
+       {
+           $totalPrice=0;
+           $result=DB::table('coupons')
+           ->where(['code'=>$request->coupon_code])
+           ->get();
+           $getAddToCartTotalItem=getAddToCartTotalItem();
+           $totalPrice=0;
+           foreach($getAddToCartTotalItem as $list){
+               $totalPrice=$totalPrice+($list->qty*$list->price);
+           }
+
+           return response()->json(['status'=>'success','msg'=>'Coupon code removed','totalPrice'=>$totalPrice]);
+       }
+
+
 
        public function place_order(Request $request)
        {
            $payment_url='';
            $rand_id=rand(111111111,999999999);
+           /// new user create account start ////
+           if(!$request->session()->has('USER_ID')){
 
-           if($request->session()->has('USER_ID')){
-
-           }else{
              $valid=Validator::make($request->all(),[
-
                  "email"=>'required|email|unique:users,email',
-
             ]);
 
-               if(!$valid->passes()){
-                   return response()->json(['status'=>'error','msg'=>"The email has already been taken"]);
+           if(!$valid->passes()){
+               return response()->json(['status'=>'error','msg'=>"The email has already been taken"]);
+           }else{
+             // user entery
+             $user_arr=[
+                 "name"=>$request->name,
+                 "email"=>$request->email,
+                 "mobile"=>$request->mobile,
+                 "password"=>Hash::make($rand_id),
+                 "mobile"=>$request->mobile,
+                 "status"=>1,
+                 "email_verified_at"=>date('Y-m-d h:i:s'),
+                 "rand_id"=>$rand_id,
+                 'role_id'=>3,
+                 'created_at'=>date('y-m-d h:m:s'),
+                 'updated_at'=>date('y-m-d h:m:s')
+             ];
+             $user_id=DB::table('users')->insertGetId($user_arr);
+             // user detail entery
+             $user_detail_arr=[
+                  "user_id"=>$user_id,
+                  "address"=>$request->address,
+                  "city"=>$request->city,
+                  "state"=>$request->state,
+                  "zip"=>$request->zip,
+                  "country"=>$request->country,
+                  "company"=>$request->Company
+             ];
+             DB::table('user_details')->insert($user_detail_arr);
+             //user session start///
+             $getUserTempId=getUserTempId();
 
-               }else{
-                   $user_arr=[
-                       "name"=>$request->name,
-                       "email"=>$request->email,
-                       "mobile"=>$request->mobile,
-                       "password"=>Hash::make($rand_id),
-                       "mobile"=>$request->mobile,
-                       "status"=>1,
-                       "email_verified_at"=>date('Y-m-d h:i:s'),
-                       "rand_id"=>$rand_id,
-                       'role_id'=>3
+             $request->session()->put('RANK',3);
+             $request->session()->put('USER_ID',$user_id);
+             $request->session()->put('USER_NAME',$request->name);
+             $request->session()->put('USER_EMAIL',$request->email);
 
-                   ];
+             $data=['name'=>$request->name,'password'=>$rand_id];
+            /* $user['to']=$request->email;
+             Mail::send('front/password_send',$data,function($messages) use ($user){
+                 $messages->to($user['to']);
+                 $messages->subject('New Password');
+             });*/
 
-
-                   $user_id=DB::table('users')->insertGetId($user_arr);
-
-                   $user_detail_arr=[
-                        "user_id"=>$user_id,
-                        "address"=>$request->address,
-                        "city"=>$request->city,
-                        "state"=>$request->state,
-                        "zip"=>$request->zip
-                        //"company"=>
-                   ];
-                   $user_id=DB::table('user_details')->insert($user_detail_arr);
-
-                   $getUserTempId=getUserTempId();
-                   $request->session()->put('RANK','user');
-                   $request->session()->put('USER_ID',$user_id);
-                   $request->session()->put('USER_NAME',$request->name);
-
-                   $data=['name'=>$request->name,'password'=>$rand_id];
-                  /* $user['to']=$request->email;
-                   Mail::send('front/password_send',$data,function($messages) use ($user){
-                       $messages->to($user['to']);
-                       $messages->subject('New Password');
-                   });*/
+             //update cart
+            DB::table('carts')
+             ->where(['user_id'=>$getUserTempId,'user_type'=>'Not-Reg'])
+             ->update(['user_id'=>$user_id,'user_type'=>'Reg']);
+            }
+          }/// new user create account end ////
 
 
-                      DB::table('carts')
-                       ->where(['user_id'=>$getUserTempId,'user_type'=>'Not-Reg'])
-                       ->update(['user_id'=>$user_id,'user_type'=>'Reg']);
-               }
-
-           }
            $coupon_value=0;
     /*       if($request->coupon_code!=''){
                $arr=apply_coupon_code($request->coupon_code);
@@ -595,6 +642,7 @@ class FrontController extends Controller
            foreach($getAddToCartTotalItem as $list){
                $totalPrice=$totalPrice+($list->qty*$list->price);
            }
+           //create order
            $arr=[
                "user_id"=>$uid,
                "name"=>$request->name,
@@ -609,21 +657,26 @@ class FrontController extends Controller
                "payment_type"=>$request->payment_type,
                "payment_status"=>"Pending",
                "total_amt"=>$totalPrice,
-               "order_status"=>1
-              // "added_on"=>date('Y-m-d h:i:s')
+               "order_status"=>1,
+               "created_at"=>date('Y-m-d h:i:s'),
+               "updated_at"=>date('Y-m-d h:i:s')
            ];
            $order_id=DB::table('orders')->insertGetId($arr);
 
            if($order_id>0){
-               foreach($getAddToCartTotalItem as $list){
-                   $prductDetailArr['product_id']=$list->pid;
-                   $prductDetailArr['order_id']=$order_id;
-                   $prductDetailArr['products_attr_id']=$list->attr_id;
-                   $prductDetailArr['price']=$list->price;
-                   $prductDetailArr['qty']=$list->qty;
-                   DB::table('order_details')->insert($prductDetailArr);
-               }
+             foreach($getAddToCartTotalItem as $list){
+                 $prductDetailArr['product_id']=$list->pid;
+                 $prductDetailArr['order_id']=$order_id;
+                 $prductDetailArr['products_attr_id']=$list->attr_id;
+                 $prductDetailArr['price']=$list->price;
+                 $prductDetailArr['qty']=$list->qty;
+                 $prductDetailArr['created_at']=date('Y-m-d h:i:s');
+                 $prductDetailArr['updated_at']=date('Y-m-d h:i:s');
+                 DB::table('order_details')->insert($prductDetailArr);
+            }
+            // create order end
 
+            //paymen process start
                if($request->payment_type=='Gateway'){
                    $final_amt=$totalPrice-$coupon_value;
                    $ch = curl_init();
@@ -668,7 +721,7 @@ class FrontController extends Controller
                }
 
 
-
+               // empty cart
                DB::table('carts')->where(['user_id'=>$uid,'user_type'=>'Reg'])->delete();
                $request->session()->put('ORDER_ID',$order_id);
 
@@ -676,7 +729,7 @@ class FrontController extends Controller
                $msg="Order placed";
            }else{
                $status="false";
-               $msg="Please try after sometime";
+               $msg="Please try again after sometime";
            }
            return response()->json(['status'=>$status,'msg'=>$msg,'payment_url'=>$payment_url]);
        }
@@ -721,6 +774,7 @@ class FrontController extends Controller
               }
           }
 
+// SQLSTATE[42S22]: Column not found: 1054 Unknown column 'payment_id' in 'field list' (SQL: update `orders` set `payment_status` = Success, `payment_id` = MOJO2816C05A03694345 where (`txn_id` = dcc9c9000d994f9f87a172dcd16e1fb5))
 
 public function orders(Request $request)
 {
@@ -741,9 +795,13 @@ public function order_detail(Request $request,$id)
     ->where(['orders.id'=>$id])
     ->where(['orders.user_id'=>$request->session()->get('USER_ID')])
     ->first();
+
+    if(!$result['order']){
+      return redirect('orders');
+    }
+
 //chek and return cond..
 //status column required to product status..
-
         $result['orders_detail']=DB::table('order_details')
         ->select('order_details.product_id','order_details.products_attr_id','order_details.price','order_details.qty',
          'products.name as pname','products.slug','product_images.img','sizes.size','colors.name as color')
@@ -755,16 +813,13 @@ public function order_detail(Request $request,$id)
         ->where(['order_details.order_id'=>$result['order']->id])
         ->get();
 
+
         $result['users']=DB::table('users')
         ->select('users.name','users.email','users.mobile','user_details.*',)
         ->leftJoin('user_details','user_details.user_id','=','users.id')
         ->where(['users.id'=>$request->session()->get('USER_ID')])
         ->first();
-  /*  
-    if(!isset($result['orders_details'][0])){
-        return redirect('/');
-    }
-*/
+
     //prx($result);
     return view('front.order_detail',$result);
 }
@@ -794,6 +849,69 @@ public function product_attr(Request $request){
      ->where(['product_attributes_id'=>$result['product_attr']->attr_id])->first('img');
 
    return response()->json(['status'=>'success','img'=>$img, 'price'=>$price, 'attr_id'=>$attr_id, 'mrp'=>$mrp]);
+}
+
+
+public function profile_detail(Request $request){
+  if($request->method()=="POST"){
+    $check=DB::table('users')
+    ->where(['users.id'=>$request->session()->get('USER_ID')])
+    ->update([
+      'name'=>$request->post('name'),
+      'mobile'=>$request->post('mobile'),
+      'email'=>$request->post('email'),
+    ]);
+
+
+      $check1=DB::table('user_details')
+      ->where(['user_details.user_id'=>$request->session()->get('USER_ID')])
+      ->update([
+        'address'=>$request->post('village'),
+        'state'=>$request->post('state'),
+        'city'=>$request->post('city'),
+        'zip'=>$request->post('zip'),
+        'company'=>$request->post('company'),
+        'zip'=>$request->post('zip'),
+      ]);
+
+    if($check || $check1) $res = ['status'=>'success', 'msg'=>'Your profile update successfuly!'];
+    else $res = ['status'=>'error', 'msg'=>'something goes wrong, please try again!'];
+
+    return redirect()->back()->with($res);
+  }
+
+  $user=
+  DB::table('users')
+  ->where(['users.id'=>$request->session()->get('USER_ID')])
+  ->leftJoin('user_details', 'user_details.user_id', '=', 'users.id')
+  ->first(['users.name', 'users.email', 'users.mobile', 'users.created_at', 'user_details.*']);
+
+  return view('front.profile_edit', ['user'=>$user]);
+}
+
+
+
+public function contact_us(Request $request){
+  if($request->method()=="POST"){
+
+
+  //  return redirect()->back()->with($res);
+  }
+
+
+
+  return view('front.contact_us');
+}
+
+
+function product_attr_features(Request $request){
+
+    $attr_id = $request->post('attr_id');
+    if($attr_id>0){
+      $data = DB::table('product_attr_features')->where(['product_attr_id'=>$attr_id])->first('data');
+       return $data;
+    }
+
 }
 
 }

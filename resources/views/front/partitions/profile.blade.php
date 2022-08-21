@@ -17,8 +17,8 @@
             </a>
             </li>
             <li class="list-group-item">
-            <a href="{{route('logout')}}">
-            <b>Profile</b> 
+            <a href="{{url('/profile')}}">
+            <b>Profile</b>
             </a>
             </li>
             <li class="list-group-item">
@@ -29,7 +29,7 @@
             </li>
             <li class="list-group-item">
             <a href="{{route('logout')}}">
-            <b>Logout</b> 
+            <b>Logout</b>
             </a>
             </li>
         </ul>

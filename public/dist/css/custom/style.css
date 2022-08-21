@@ -206,24 +206,8 @@ position: relative!important;
 .text-base {
 font-size: 1rem!important;
 }
-/****sters**/
-@media (min-width: 768px){
-.product-type-0:hover .product-stars {
-transform: translateY(0);
-opacity: 1;
-}}
 
-@media (min-width: 768px){
-.product-stars {
-transform: translateY(1rem);
-opacity: 0;
-}}
-.product-stars {
-position: absolute;
-right: 0;
-bottom: 5px;
-transition: all .3s;
-}/*responsive***********/
+/*responsive***********/
 .popup-filter{
 display: none;
 }
@@ -371,21 +355,27 @@ opacity: 0;
 /****sters**/
 @media (min-width: 768px){
 .product-type-0:hover .product-stars {
-  transform: translateY(0);
-  opacity: 1;
+    transform: translateY(0);
+    opacity: 1;
 }}
-
+.product-stars {
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+    transition: all .3s;
+}
 @media (min-width: 768px){
 .product-stars {
-  transform: translateY(1rem);
-  opacity: 0;
+    transform: translateY(1rem);
+    opacity: 0;
 }}
+
+@media (max-width: 500px){
 .product-stars {
-  position: absolute;
-  right: 0;
-  bottom: 5px;
-  transition: all .3s;
-}
+  position: relative;
+}}
+
+
 /*detail page-***********/
   .btn-default {
      background-color: #fff;

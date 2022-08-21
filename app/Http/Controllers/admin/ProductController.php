@@ -107,9 +107,9 @@ class ProductController extends Controller
   public function manage_product_process(Request $request)
   {
     //  return $request->file( );
-  /*  echo "<pre>";
-     print_r($request->file("attr_image.$key"));
-     die;*/
+//prx($request->file('attr_image'));
+    // prx($request->file("attr_image.$key"));
+  //  prx($_FILES);
 
      if($request->add) $request->flash();
       $request->validate([
@@ -156,7 +156,7 @@ class ProductController extends Controller
       //  $model->is_discounted=$request->post('is_discounted');
         $model->is_tranding=$request->post('is_tranding');
         $model->status=1;
-      $model->save();
+       $model->save();
       $pid=$model->id;
 
       /*Product Attr Start*/
@@ -171,12 +171,13 @@ class ProductController extends Controller
      foreach($skuArr as $key=>$val){
          $check=ProductAttribute::where('sku','=',$skuArr[$key])->
          where('id','!=',$paidArr[$key])->
-         get();
+         exists();
 
          if(isset($check[0])){
              $request->session()->flash('sku_error',$skuArr[$key].' SKU already used');
              return redirect(request()->headers->get('referer'));
          }
+
      }
 
      /*insert and update attr*/
@@ -198,46 +199,81 @@ class ProductController extends Controller
           }else{
               $productAttrArr['color_id']=$color_idArr[$key];
           }
-
-          $image_name=""; // to store product attribute image name globaly
-          if($request->hasFile("attr_image.$key")){
-           if($paidArr[$key]!=''){
-                $arrImage=ProductImage::where('product_attributes_id','=',$paidArr[$key])->first();
-
-                if(isset($arrImage[0])){
-                  if(Storage::exists('/public/media/product/'.$arrImage[0]->img)){
-                      Storage::delete('/public/media/product/'.$arrImage[0]->img);
-                }
-              }
-              }
-
-              $rand=rand('111111111','999999999');
-              $attr_image=$request->file("attr_image.$key");
-              $ext=$attr_image->extension();
-              $image_name=$rand.'.'.$ext;
-              $request->file("attr_image.$key")->storeAs('/public/media/product',$image_name);
-          }
-
+          // inser or update product attributes
           if($paidArr[$key]!=''){
               $updateAttrId = DB::table('product_attributes')->where(['id'=>$paidArr[$key]])->update($productAttrArr);
-              if(isset($image_name))
-                $productAttrImag = ProductImage::where('product_attributes_id', $paidArr[$key])->update(['img'=>$image_name]);
           }else{
               $attr_insert_id = DB::table('product_attributes')->insertGetId($productAttrArr);
-              $productAttrImag = new ProductImage();
-              $productAttrImag->product_attributes_id = $attr_insert_id;
-              $productAttrImag->img = $image_name;
-              $productAttrImag->save();
           }
 
+
+          $image_name=""; // to store product attribute image name globaly
+              /***new multi product */
+              if($request->hasFile("attr_image.$key")){
+              foreach ($request->File("attr_image.$key") as $value) {
+//                echo "<pre>";
+    //          print_R($value);
+
+
+
+                  $rand=rand('111111111','999999999');
+                      $attr_image=$value;
+                      $ext=$attr_image->extension();
+                      $image_name=$rand.'.'.$ext;
+                      $value->storeAs('/public/media/product',$image_name);
+
+                      $productAttrImag = new ProductImage();
+                      $productAttrImag->product_attributes_id = $attr_insert_id;
+                      $productAttrImag->img = $image_name;
+                      $productAttrImag->save();
+
+                    //  if(isset($image_name))
+                    //    $productAttrImag = ProductImage::where('product_attributes_id', $paidArr[$key])->update(['img'=>$image_name]);
+
+
+
+              }
+            }
+
+              /***new multi product */
       }
-
       /*Product Attr End*/
-
       $request->session()->flash('message',$msg);
       return redirect('admin/product');
-
   }
+
+
+
+
+ //imags upload and delete, edit
+  public function multi_img_process(Request $request){
+      $pattrid = $request->post('product_attr_id');
+      $imgId = $request->post('imgId');
+
+      if($imgId!='' && $pattrid>0){
+        $check = ProductImage::
+        where('product_attributes_id','=',$pattrid)->
+        where('img','=',$imgId)
+        ->first('id');
+
+        if($check->id>0){
+          /*  -------- delete image --*/
+          ProductImage::find($check->id)->delete();
+           if(Storage::exists('/storage/media/product/'.$imgId)){
+               Storage::delete('/storage/media/product/'.$imgId);
+             }
+        }
+
+      }
+        $result = ProductImage::where(['product_attributes_id'=>$pattrid])
+         ->get('img');
+
+      // prx($result[0]->img);
+       return response()->json(['status'=>"success",'imgs'=>$result]);
+  }
+
+
+
 
   public function delete(Request $request,$slug){
 
@@ -289,5 +325,39 @@ class ProductController extends Controller
       $model->save();
       $request->session()->flash('message','product status updated');
       return redirect('admin/product');
+  }
+
+
+
+  //Features
+  public function product_attr_features(Request $request)
+  {
+
+    //prx($request->post());
+  $arr = [];
+  $headers = $request->post('heading');
+  $key = $request->post('key');
+  $value = $request->post('value');
+  $attr_id = $request->post('attr_id');
+    foreach ($headers as $header) {
+
+       foreach ($key[$header]  as $id => $name) {
+          $arr[$header][$name]=$value[$header][$id];
+       }
+    }
+
+$check = DB::table('product_attr_features')->where(['product_attr_id'=>$attr_id])->exists();
+if($check){
+$check = DB::table('product_attr_features')
+    ->where(['product_attr_id'=>$attr_id])
+    ->update(['data'=>json_encode($arr)]);
+    if($check) echo "update"; die;
+}
+
+$check = DB::table('product_attr_features')->insert(['product_attr_id'=>$attr_id,'data'=>json_encode($arr)]);
+if($check){
+  echo "pg";
+}
+
   }
 }
